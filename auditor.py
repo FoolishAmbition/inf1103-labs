@@ -17,6 +17,7 @@ while True:
         print("Error: Please use integers only.")
 
    if inventory > 500:
+      print("Alert: Inventory limit exceeded.")
       print("Total Units Processed: ", inventory, "\n"
            "Number of Failed/Rejected Entries: ", failed_entries)
       break
