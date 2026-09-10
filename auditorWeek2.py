@@ -14,6 +14,9 @@ while True:
    else:
         failed_entries += 1
         print("Error: Please use integers only.")
-if inventory < 500:
-        print("Alert: Inventory is below 500.")
+
+   if inventory > 500:
+      print("Total Units Processed: ", inventory, "\n"
+           "Number of Failed/Rejected Entries.: ", failed_entries)
+      break
 
