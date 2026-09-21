@@ -1,0 +1,7 @@
+# Word lock files
+~$*.docx
+
+# Python
+venv/
+__pycache__/
+*.pyc

@@ -1,0 +1,60 @@
+commit c5618b6686afab2bc5b18691ea98de382d46c29c
+Author: ms <mingshun21@gmail.com>
+Date:   Mon Sep 21 21:08:51 2026 +0800
+
+    Week 3 tutorial lab
+
+commit a2aadf23eac2894fccb5fc499888e2bc4d4a3af5
+Author: ms <mingshun21@gmail.com>
+Date:   Thu Sep 10 14:27:13 2026 +0800
+
+    alert
+
+commit aa7284299879ba4a8f1036cd3a544b8abd688c13
+Author: ms <mingshun21@gmail.com>
+Date:   Thu Sep 10 14:01:04 2026 +0800
+
+    add new alert
+
+commit ab54915d8d287f3fe4716ec6f910a04f1a6ef268
+Author: ms <mingshun21@gmail.com>
+Date:   Thu Sep 10 13:59:54 2026 +0800
+
+    added an alert as per guidelines
+
+commit 120a0d55aeb00cd3140a5ae6c828867ff4dabff1
+Author: ms <mingshun21@gmail.com>
+Date:   Thu Sep 10 13:56:48 2026 +0800
+
+    slight changes, no major changes in logic
+
+commit 423d3e26a9cf8198a293805d0d2ee3871e3852b1
+Author: ms <mingshun21@gmail.com>
+Date:   Thu Sep 10 13:48:28 2026 +0800
+
+    fixed when total inventory reaches more than 500 it should break immediately
+
+commit e536d53a5355acc6abc1c270597bbcc1e5b0f10d
+Author: ms <mingshun21@gmail.com>
+Date:   Thu Sep 10 13:44:27 2026 +0800
+
+    added counter for the number of entrys
+
+commit b52f52474e699cf8f15da24fa38a2b5beaded8bd
+Merge: 12c294d 24e13fb
+Author: ms <mingshun21@gmail.com>
+Date:   Thu Sep 10 10:28:38 2026 +0800
+
+    Merge remote depository
+
+commit 12c294de1cda1469390f8c258a006396444f159b
+Author: ms <mingshun21@gmail.com>
+Date:   Thu Sep 10 10:20:44 2026 +0800
+
+    Initial commit
+
+commit 24e13fb4eecdf64ef84dbc07d482515516f3d0d9
+Author: shunn <mingshun21@gmail.com>
+Date:   Thu Sep 10 10:09:17 2026 +0800
+
+    Initial commit
