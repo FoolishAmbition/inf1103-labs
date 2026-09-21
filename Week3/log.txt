@@ -1,3 +1,9 @@
+commit fbb1cbe3528d2f81c7bed255756406d1f989c746
+Author: ms <mingshun21@gmail.com>
+Date:   Mon Sep 21 21:47:47 2026 +0800
+
+    Week 3: Refactor auditor to functions, add calculate_tax, reorganize into Week2/Week3 folders
+
 commit c5618b6686afab2bc5b18691ea98de382d46c29c
 Author: ms <mingshun21@gmail.com>
 Date:   Mon Sep 21 21:08:51 2026 +0800
