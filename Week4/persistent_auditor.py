@@ -53,6 +53,25 @@ def load_inventory():
 
     return inventory
 
+def save_inventory(inventory):
+    """ Write the current inventory list to inventory.txt with the transaction history for each item. """
+    with open(INVENTORY_FILE, "w") as file:
+        for item in inventory:
+            # Extract the data from the item list
+            item_id = item[ITEM_FIELDS["id"]]
+            name = item[ITEM_FIELDS["name"]]
+            quantity = item[ITEM_FIELDS["quantity"]]
+            history = item[ITEM_FIELDS["transaction_history"]]
+
+            # Convert the history list to a string
+            # Format: "id,name,quantity,history_string"
+            history_string = "|".join(str(x) for x in history)
+            line = f"{item_id},{name},{quantity},{history_string}\n"
+
+            # write the line to the file
+            file.write(line)
+
+    print("Inventory saved successfully.")
 
 """
 def get_valid_input():
@@ -112,7 +131,8 @@ if __name__ == "__main__":
 
 def main():
     inventory = load_inventory()
-    print("Loaded Inventory: ", inventory)
-    print(inventory)
+    print("Loaded Inventory:", inventory)
+
+    save_inventory(inventory)
 
 main()
