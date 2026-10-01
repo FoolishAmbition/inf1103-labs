@@ -1,3 +1,60 @@
+# Global Constants
+ITEM_FIELDS = {"id": 0, "name": 1, "quantity": 2, "transaction_history": 3}
+INVENTORY_FILE = "inventory.txt"
+MAX_CAPCITY = 500
+TAX_RATE = 0.1
+EXIT_SIGNAL = "quit"
+
+def load_inventory():
+    """ Reads inventory.txt and then returns a list of items as well as the transaction history for each item. """
+    inventory = []
+    try:
+        # 1. Open the file in read mode ("r")
+        with open(INVENTORY_FILE, "r") as file:
+
+            # 2. Loop through each line in the file
+            for line in file:
+                # Remove any trailing newline characters
+                line = line.strip() 
+
+                # Skip empty lines just in case
+                if not line:
+                    continue
+
+                # 3. Split the line by comma
+                parts = line.split(",")
+
+                # 4. Extract the data
+                item_id = parts[0]
+                name = parts[1]
+                quantity = int(parts[2])
+
+                # 5. Handle the transaction history
+                history_string = parts[3]
+
+                # If the history is empty, handle it
+                if history_string == "":
+                    history = []
+                else:
+                    # Split by "|" and convert each to an integer
+                    history = [int(x) for x in history_string.split("|")]
+                    
+                # 6. Create the item list
+                # Use your ITEM_FIELDS constants to keep it clean
+                item = [item_id, name, quantity, history]
+
+                # 7. Add the item to the inventory list
+                inventory.append(item)
+
+    except FileNotFoundError:
+                # runs if the inventory.txt file is not found
+                print("No inventory file is found. Starting with an empty inventory.")
+                return []
+
+    return inventory
+
+
+"""
 def get_valid_input():
     user_input = input("Enter the number of items of stock quantity please use integers (or type 'quit' to quit): ")
 
@@ -50,3 +107,12 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+"""
+
+def main():
+    inventory = load_inventory()
+    print("Loaded Inventory: ", inventory)
+    print(inventory)
+
+main()
