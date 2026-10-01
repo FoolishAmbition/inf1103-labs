@@ -73,66 +73,97 @@ def save_inventory(inventory):
 
     print("Inventory saved successfully.")
 
+def get_valid_input(item):
+     """Prompts and validate the quanity to add for a given item."""
+     name = item[ITEM_FIELDS["name"]]
+     user__input = input(f"Enter quantity for {name} (or type 'quit' to quit): ")
+
+     if user__input.lower() == EXIT_SIGNAL:
+         return EXIT_SIGNAL
+
+     if user__input.isdigit() and int(user__input) >= 0:
+          return int(user__input)
+
+     print("Error: Please use positive integers only.")
+     return None
+
+def process_delivery(item, new_quantity):
+     """Updates the item quanity and append the transaction history. Updates the item direction. """
+     item[ITEM_FIELDS["quantity"]] += new_quantity
+
+     # append the new quanity to the history list
+     item[ITEM_FIELDS["transaction_history"]].append(new_quantity)
+     # return None (it modifies the list directly, so no need to return anything)
+
 """
-def get_valid_input():
-    user_input = input("Enter the number of items of stock quantity please use integers (or type 'quit' to quit): ")
-
-    if user_input.lower() == 'quit':
-        return "quit"
-
-    if user_input.isdigit():
-        return int(user_input)
-
-    if user_input.startswith('-') and user_input[1:].isdigit():
-        print("Error: Please use positive integers only.")
-        return None
-
-    print("Error: Please use integers only.")
-    return None
-
-def process_delivery(current_total, new_value):
-     return current_total + new_value #Calculates the new total of inventory after adding the new value
-
-
 
 def calculate_tax(amount):
     return round(amount * 0.10, 2) #Calculates the tax amount based on a 10% tax rate
 
-def generate_report(total_units, failed_attempts): 
-    print("Total Units Processed: ", total_units)
-    print("Number of Failed/Rejected Entries: ", failed_attempts)
-
-def main():
-    inventory = 0
-    failed_entries = 0
-    total_tax = 0
-
-    while True:
-        result = get_valid_input()
-        if result == "quit":
-            break
-        if result is None:
-            failed_entries += 1
-            continue
-
-        inventory = process_delivery(inventory, result)
-        total_tax += calculate_tax(result)
-
-        if inventory > 500:
-            print("Alert: Inventory limit exceeded.")
-            break
-    generate_report(inventory, failed_entries)
-    print("Total Tax Collected: ", round(total_tax, 2))
-
-if __name__ == "__main__":
-    main()
-
 """
+
+def generate_report(inventory, failed_attempts): 
+    total_units = sum(item[ITEM_FIELDS["quantity"]] for item in inventory)
+    
+    print("\n--- Final Summary ---")
+    print("Total Units Processed:", total_units)
+    print("Number of Failed/Rejected Entries:", failed_attempts)
+
+
+
+def find_item(inventory, item_id):
+     """Searches inventory by item ID. Returns the item list or None if not found."""
+     for item in inventory:
+          if item[ITEM_FIELDS["id"]] == item_id:
+               return item
+     return None 
+
+def display_inventory(inventory):
+     """Displays all inventory items"""
+     print("\nCurrent Orders:")
+     for item in inventory:
+          print(f"{item[ITEM_FIELDS['id']]}, {item[ITEM_FIELDS['name']]}, {item[ITEM_FIELDS['quantity']]}")
+
+
 
 def main():
     inventory = load_inventory()
-    print("Loaded Inventory:", inventory)
+    failed_entries = 0
 
+    # Helper function to print the current list
+    display_inventory(inventory)
+
+    while True:
+         # 1. Asks for item ID
+         item_id = input("\nEnter Product ID (or type 'quit' to quit): ")
+
+         if item_id.lower() == EXIT_SIGNAL:
+             break
+
+         # 2. Find the item 
+         item = find_item(inventory, item_id)
+         if item is None:
+              print(f"Error: Item ID '{item_id}' not found.")
+              failed_entries += 1
+              continue
+
+         # 3. Ask for quantity using the item
+         quantity = get_valid_input(item)
+
+         if quantity == EXIT_SIGNAL:
+             break
+         if quantity is None:
+              failed_entries += 1
+              continue
+
+         # 4. Process the delivery (this will update the item quantity and transaction history)
+         process_delivery(item, quantity)
+         print(f"\nNew Order Added: {item[ITEM_FIELDS['id']]}, {item[ITEM_FIELDS['name']]}, {item[ITEM_FIELDS['quantity']]}")
+
+         # 5. Save everything back to the file and print the report
+    
     save_inventory(inventory)
+    generate_report(inventory, failed_entries)
 
-main()
+if __name__ == "__main__":
+    main()

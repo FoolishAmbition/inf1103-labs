@@ -1,2 +1,0 @@
-1001,Wireless Mouse,20,5|10|5
-1002,Keyboard,10,5|5
