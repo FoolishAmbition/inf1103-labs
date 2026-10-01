@@ -73,19 +73,19 @@ def save_inventory(inventory):
 
     print("Inventory saved successfully.")
 
-def get_valid_input(item):
-     """Prompts and validate the quanity to add for a given item."""
-     name = item[ITEM_FIELDS["name"]]
-     user__input = input(f"Enter quantity for {name} (or type 'quit' to quit): ")
+def get_quantity_input():
+    """Prompts the user for a quantity and validates it."""
+    user_input = input("Enter Quantity: ")
+    
+    if user_input.lower() == EXIT_SIGNAL:
+        return EXIT_SIGNAL
+        
+    if user_input.isdigit() and int(user_input) > 0:
+        return int(user_input)
+        
+    print("Error: Please enter a valid positive integer.")
+    return None
 
-     if user__input.lower() == EXIT_SIGNAL:
-         return EXIT_SIGNAL
-
-     if user__input.isdigit() and int(user__input) >= 0:
-          return int(user__input)
-
-     print("Error: Please use positive integers only.")
-     return None
 
 def process_delivery(item, new_quantity):
      """Updates the item quanity and append the transaction history. Updates the item direction. """
@@ -139,39 +139,54 @@ def display_inventory(inventory):
 def main():
     inventory = load_inventory()
     failed_entries = 0
-
-    # Helper function to print the current list
-    display_inventory(inventory)
-
-    while True:
-         # 1. Asks for item ID
-         item_id = input("\nEnter Product ID (or type 'quit' to quit): ")
-
-         if item_id.lower() == EXIT_SIGNAL:
-             break
-
-         # 2. Find the item 
-         item = find_item(inventory, item_id)
-         if item is None:
-              print(f"Error: Item ID '{item_id}' not found.")
-              failed_entries += 1
-              continue
-
-         # 3. Ask for quantity using the item
-         quantity = get_valid_input(item)
-
-         if quantity == EXIT_SIGNAL:
-             break
-         if quantity is None:
-              failed_entries += 1
-              continue
-
-         # 4. Process the delivery (this will update the item quantity and transaction history)
-         process_delivery(item, quantity)
-         print(f"\nNew Order Added: {item[ITEM_FIELDS['id']]}, {item[ITEM_FIELDS['name']]}, {item[ITEM_FIELDS['quantity']]}")
-
-         # 5. Save everything back to the file and print the report
     
+    display_inventory(inventory)
+    
+    while True:
+        print() # Just for spacing
+        
+        # 1. Ask for Product Name
+        product_name = input("Enter Product Name (or 'quit' to exit): ")
+        
+        if product_name.lower() == EXIT_SIGNAL:
+            break
+            
+        if not product_name.strip(): # Check for empty name
+            print("Error: Product name cannot be empty.")
+            failed_entries += 1
+            continue
+        
+        # 2. Ask for Quantity
+        quantity = get_quantity_input()
+        
+        if quantity == EXIT_SIGNAL:
+            break
+        if quantity is None:
+            failed_entries += 1
+            continue
+            
+        # 3. Check if the product already exists (case-insensitive)
+        existing_item = None
+        for item in inventory:
+            if item[ITEM_FIELDS["name"]].lower() == product_name.lower():
+                existing_item = item
+                break
+        
+        if existing_item:
+            # Update existing item
+            process_delivery(existing_item, quantity)
+            print(f"\nOrder Updated: {existing_item[ITEM_FIELDS['id']]},{existing_item[ITEM_FIELDS['name']]},{existing_item[ITEM_FIELDS['quantity']]}")
+        else:
+            # Create a brand new item
+            new_id = generate_new_id(inventory)
+            new_item = [new_id, product_name, quantity, [quantity]]
+            inventory.append(new_item)
+            print(f"\nNew Order Added: {new_id},{product_name},{quantity}")
+            
+        # Print the updated inventory
+        display_inventory(inventory)
+
+    # 4. Save everything back to the file and print the report
     save_inventory(inventory)
     generate_report(inventory, failed_entries)
 
