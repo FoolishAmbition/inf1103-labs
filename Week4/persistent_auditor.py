@@ -118,6 +118,16 @@ def find_item(inventory, item_id):
                return item
      return None 
 
+def generate_new_id(inventory):
+     """Generates the next sequential ID starting from 1001"""
+     if not inventory:
+          return "1001"
+
+
+     # Get the highest existing ID (convert to int for comparison)
+     highest_id = max(int(item[ITEM_FIELDS["id"]]) for item in inventory)
+     return str(highest_id + 1)  # Return the next ID as a string
+
 def display_inventory(inventory):
      """Displays all inventory items"""
      print("\nCurrent Orders:")
