@@ -2,7 +2,7 @@ import unittest
 from io import StringIO
 from contextlib import redirect_stdout
 
-from main import Product, PhysicalProduct, DigitalProduct
+from main import Product, PhysicalProduct, DigitalProduct, CanBeShipped
 
 
 class TestProductOverriding(unittest.TestCase):
@@ -62,6 +62,25 @@ class TestProductOverriding(unittest.TestCase):
     def test_product_cannot_be_instantiated(self):
         with self.assertRaises(TypeError):
             Product("P002", "Generic", 10, 5)
+    
+    def test_physical_shipping_cost(self):
+        product = PhysicalProduct("P001", "Laptop", 1200, 5, 2.5)
+
+        self.assertEqual(product.calculate_shipping_cost(), 12.50)
+
+    def test_shipping_cost_different_weight(self):
+        product = PhysicalProduct("P002", "Monitor", 300, 3, 5.0)
+
+        self.assertEqual(product.calculate_shipping_cost(), 25.00)
+
+    def test_digital_product_has_no_shipping(self):
+        product = DigitalProduct("D001", "Antivirus", 49.90, 20, 500)
+
+        self.assertFalse(hasattr(product, "calculate_shipping_cost"))
+    
+    def test_interface_cannot_be_instantiated(self):
+        with self.assertRaises(TypeError):
+            CanBeShipped()
 
 if __name__ == "__main__":
     unittest.main()

@@ -37,6 +37,15 @@ class Product(ABC):
         pass
 
 # =============================================================
+# CAN BE SHIPPED INTERFACE
+# =============================================================
+class CanBeShipped(ABC):
+
+    @abstractmethod
+    def calculate_shipping_cost(self):
+        pass
+
+# =============================================================
 # PHYSICAL PRODUCT CLASS
 # =============================================================
 class PhysicalProduct(Product):
@@ -50,6 +59,9 @@ class PhysicalProduct(Product):
 
     def get_fulfilment_info(self):
         return "This product requires physical shipping."
+    
+    def calculate_shipping_cost(self):
+        return self._weight * 5.00
 
 # =============================================================
 # DIGITAL PRODUCT CLASS
