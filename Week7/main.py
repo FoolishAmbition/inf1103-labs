@@ -62,6 +62,15 @@ class PhysicalProduct(Product):
     
     def calculate_shipping_cost(self):
         return self._weight * 5.00
+    
+    def to_dict(self):
+        data = super().to_dict()
+        data["type"] = "physical"
+        data["weight"] = self._weight
+        return data
+
+# Registering the entire PhysicalProduct class as a virtual subclass of CanBeShipped
+CanBeShipped.register(PhysicalProduct)
 
 # =============================================================
 # DIGITAL PRODUCT CLASS
@@ -77,6 +86,12 @@ class DigitalProduct(Product):
     
     def get_fulfilment_info(self):
         return "This product is delivered digitally."
+    
+    def to_dict(self):
+        data = super().to_dict()
+        data["type"] = "digital"
+        data["download_size"] = self._download_size
+        return data
 
 # =============================================================
 # INVENTORY CLASS
@@ -112,20 +127,53 @@ class Inventory:
 # =============================================================
 def load_inventory():
     inventory = Inventory()
+
     if os.path.exists(INVENTORY_FILE):
         try:
             with open(INVENTORY_FILE, "r") as file:
                 data = json.load(file)
+
             for item in data:
-                product = Product(item["id"], item["name"], item["price"], item["stock"])
+                product_type = item.get("type")
+
+                if product_type == "physical":
+                    product = PhysicalProduct(
+                        item["id"],
+                        item["name"],
+                        item["price"],
+                        item["stock"],
+                        item["weight"]
+                    )
+
+                elif product_type == "digital":
+                    product = DigitalProduct(
+                        item["id"],
+                        item["name"],
+                        item["price"],
+                        item["stock"],
+                        item["download_size"]
+                    )
+
+                else:
+                    raise ValueError(
+                        f"Unknown or missing product type "
+                        f"for product {item.get('id', 'unknown')}"
+                    )
+
                 inventory.add_product(product)
-            print("inventory.json found.\nInventory loaded successfully.")
-        except (json.JSONDecodeError, IOError):
-            print("Error reading inventory.json. Starting with empty inventory.")
+
+            print("Inventory loaded successfully.")
+
+        except (json.JSONDecodeError, OSError, KeyError,
+                TypeError, ValueError) as error:
+            print(f"Error loading inventory: {error}")
+            print("Inventory file was not changed.")
+            raise
+
     else:
         print("No inventory file found. Starting with an empty inventory.")
-    return inventory
 
+    return inventory
 
 def save_inventory(inventory):
     data_to_save = [product.to_dict() for product in inventory._products]
@@ -138,6 +186,16 @@ def save_inventory(inventory):
 # MENU HANDLERS
 # =============================================================
 def menu_add_product(inventory):
+    print("\nSelect Product Type")
+    print("1. Physical Product")
+    print("2. Digital Product")
+
+    product_type = input("Enter product type: ").strip()
+
+    if product_type not in ("1", "2"):
+        print("Error: Invalid product type.")
+        return
+
     product_id = input("Product ID: ").strip()
 
     if inventory.search_product(product_id) is not None:
@@ -149,18 +207,39 @@ def menu_add_product(inventory):
     try:
         price = float(input("Price: "))
         stock = int(input("Stock Quantity: "))
+
+        if price < 0 or stock < 0:
+            print("Error: Price and stock must be non-negative.")
+            return
+
+        if product_type == "1":
+            weight = float(input("Weight (kg): "))
+
+            if weight <= 0:
+                print("Error: Weight must be positive.")
+                return
+
+            new_product = PhysicalProduct(
+                product_id, name, price, stock, weight
+            )
+
+        else:
+            download_size = float(input("Download Size (MB): "))
+
+            if download_size <= 0:
+                print("Error: Download size must be positive.")
+                return
+
+            new_product = DigitalProduct(
+                product_id, name, price, stock, download_size
+            )
+
     except ValueError:
-        print("Error: Invalid price or stock value.")
+        print("Error: Invalid numeric input.")
         return
 
-    if price < 0 or stock < 0:
-        print("Error: Price and stock must be non-negative.")
-        return
-
-    new_product = Product(product_id, name, price, stock)
-    inventory.add_product(new_product)
-    print("\nProduct added successfully!")
-
+    if inventory.add_product(new_product):
+        print("\nProduct added successfully!")
 
 def menu_update_stock(inventory):
     product_id = input("Enter Product ID: ").strip()
