@@ -1,7 +1,14 @@
-# Word lock files
-~$*.docx
-
-# Python
-venv/
+# Python cache files
 __pycache__/
-*.pyc
+*.py[cod]
+
+# Virtual environments
+.venv/
+venv/
+
+# Local environment variables
+.env
+
+# IDE settings
+.vscode/
+.idea/
