@@ -31,6 +31,29 @@ class Product:
             "stock": self._stock
         }
 
+# =============================================================
+# PHYSICAL PRODUCT CLASS
+# =============================================================
+class PhysicalProduct(Product):
+    def __init__(self, product_id, name, price, stock, weight):
+        super().__init__(product_id, name, price, stock)
+        self._weight = weight
+
+    def display_information(self):
+        super().display_information()
+        print(f"Weight: {self._weight} kg")
+
+# =============================================================
+# DIGITAL PRODUCT CLASS
+# =============================================================
+class DigitalProduct(Product):
+    def __init__(self, product_id, name, price, stock, download_size):
+        super().__init__(product_id, name, price, stock)
+        self._download_size = download_size
+
+    def display_information(self):
+        super().display_information()
+        print(f"Download Size: {self._download_size} MB")
 
 # =============================================================
 # INVENTORY CLASS
@@ -192,4 +215,12 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    # Temporary Lab 7 inheritance tests
+    physical = PhysicalProduct("P001", "Laptop", 1200.00, 5, 2.5)
+    digital = DigitalProduct("D001", "Antivirus", 49.90, 20, 500)
+
+    print("Physical Product Test:")
+    physical.display_information()
+
+    print("\nDigital Product Test:")
+    digital.display_information()
