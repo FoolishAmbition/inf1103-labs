@@ -2,7 +2,7 @@ import unittest
 from io import StringIO
 from contextlib import redirect_stdout
 
-from main import PhysicalProduct, DigitalProduct
+from main import Product, PhysicalProduct, DigitalProduct
 
 
 class TestProductOverriding(unittest.TestCase):
@@ -38,7 +38,30 @@ class TestProductOverriding(unittest.TestCase):
         self.assertIn("49.90", result)
         self.assertIn("Stock: 20", result)
         self.assertIn("Download Size: 500 MB", result)
+    
+    def test_physical_fulfilment(self):
+        product = PhysicalProduct("P001", "Laptop", 1200, 5, 2.5)
 
+        result = product.get_fulfilment_info()
+
+        self.assertEqual(
+            result,
+            "This product requires physical shipping."
+        )
+
+    def test_digital_fulfilment(self):
+        product = DigitalProduct("D001", "Antivirus", 49.90, 20, 500)
+
+        result = product.get_fulfilment_info()
+
+        self.assertEqual(
+            result,
+            "This product is delivered digitally."
+        )
+
+    def test_product_cannot_be_instantiated(self):
+        with self.assertRaises(TypeError):
+            Product("P002", "Generic", 10, 5)
 
 if __name__ == "__main__":
     unittest.main()

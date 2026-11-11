@@ -1,5 +1,6 @@
 import json
 import os
+from abc import ABC, abstractmethod
 
 INVENTORY_FILE = "inventory.json"
 
@@ -7,7 +8,7 @@ INVENTORY_FILE = "inventory.json"
 # =============================================================
 # PRODUCT CLASS
 # =============================================================
-class Product:
+class Product(ABC):
     def __init__(self, product_id, name, price, stock):
         self._product_id = product_id
         self._name = name
@@ -30,6 +31,10 @@ class Product:
             "price": self._price,
             "stock": self._stock
         }
+    
+    @abstractmethod
+    def get_fulfilment_info(self):
+        pass
 
 # =============================================================
 # PHYSICAL PRODUCT CLASS
@@ -43,6 +48,9 @@ class PhysicalProduct(Product):
         super().display_information()
         print(f"Weight: {self._weight} kg")
 
+    def get_fulfilment_info(self):
+        return "This product requires physical shipping."
+
 # =============================================================
 # DIGITAL PRODUCT CLASS
 # =============================================================
@@ -54,6 +62,9 @@ class DigitalProduct(Product):
     def display_information(self):
         super().display_information()
         print(f"Download Size: {self._download_size} MB")
+    
+    def get_fulfilment_info(self):
+        return "This product is delivered digitally."
 
 # =============================================================
 # INVENTORY CLASS
@@ -215,12 +226,4 @@ def main():
 
 
 if __name__ == "__main__":
-    # Temporary Lab 7 inheritance tests
-    physical = PhysicalProduct("P001", "Laptop", 1200.00, 5, 2.5)
-    digital = DigitalProduct("D001", "Antivirus", 49.90, 20, 500)
-
-    print("Physical Product Test:")
-    physical.display_information()
-
-    print("\nDigital Product Test:")
-    digital.display_information()
+    main()
