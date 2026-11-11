@@ -171,8 +171,9 @@ class TestInventoryIntegration(unittest.TestCase):
                 json.dump(legacy_data, file)
 
             with patch.object(main, "INVENTORY_FILE", test_file):
-                with self.assertRaises(ValueError):
-                    main.load_inventory()
+                with patch("sys.stdout", new_callable=StringIO):
+                    with self.assertRaises(ValueError):
+                        main.load_inventory()
 
             with open(test_file, "r") as file:
                 self.assertEqual(json.load(file), legacy_data)
@@ -180,6 +181,14 @@ class TestInventoryIntegration(unittest.TestCase):
     def test_physical_product_implements_shipping_interface(self):
         self.assertTrue(issubclass(PhysicalProduct, CanBeShipped))
         self.assertFalse(issubclass(DigitalProduct, CanBeShipped))
+
+    def test_update_stock(self):
+        product = PhysicalProduct("P001", "Laptop", 1200, 5, 2.5)
+
+        self.assertTrue(product.update_stock(10))
+        self.assertEqual(product._stock, 10)
+        self.assertFalse(product.update_stock(-5))
+        self.assertEqual(product._stock, 10)
 
 if __name__ == "__main__":
     unittest.main()
