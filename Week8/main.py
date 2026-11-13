@@ -150,30 +150,43 @@ class DigitalProduct(Product):
 # INVENTORY CLASS
 # =============================================================
 class Inventory:
-    def __init__(self):
-        self._products = []          # ⬅️ fixed
+    def __init__(self) -> None:
+        self._products: list[Product] = []
 
-    def add_product(self, product):
+    def add_product(self, product: Product) -> bool:
         if self.search_product(product._product_id):
             print(f"Error: Product ID '{product._product_id}' already exists.")
             return False
-        self._products.append(product)  # ⬅️ fixed
+
+        self._products.append(product)
         return True
 
-    def search_product(self, product_id):
-        for product in self._products:  # ⬅️ fixed
+    def search_product(self, product_id: str) -> Product | None:
+        for product in self._products:
             if product._product_id == product_id:
                 return product
         return None
 
-    def display_all(self):
-        if not self._products:           # ⬅️ fixed
+    def find_product(self, product_id: str) -> Product | None:
+        return self.search_product(product_id)
+
+    def remove_product(self, product_id: str) -> bool:
+        product = self.find_product(product_id)
+
+        if product is None:
+            return False
+
+        self._products.remove(product)
+        return True
+
+    def display_all(self) -> None:
+        if not self._products:
             print("\nInventory is empty.")
             return
-        print("\nCurrent Inventory\n")
-        for product in self._products:   # ⬅️ fixed
-            product.display_information()
 
+        print("\nCurrent Inventory\n")
+        for product in self._products:
+            product.display_information()
 
 # =============================================================
 # FILE HANDLING

@@ -365,6 +365,58 @@ class TestSupplierAssociation(unittest.TestCase):
         self.assertIn("Supplier: S001", output.getvalue())
         self.assertIn("Program terminated", output.getvalue())
 
+class TestInventoryAggregation(unittest.TestCase):
+
+    def setUp(self):
+        self.supplier = Supplier(
+            "S001", "Test Supplier", "test@example.com"
+        )
+        self.product = PhysicalProduct(
+            "P001", "Laptop", 1200, 5, 2.5, self.supplier
+        )
+        self.inventory_a = Inventory()
+        self.inventory_b = Inventory()
+
+    def test_find_existing_product(self):
+        self.inventory_a.add_product(self.product)
+
+        result = self.inventory_a.find_product("P001")
+
+        self.assertIs(result, self.product)
+
+    def test_find_missing_product(self):
+        result = self.inventory_a.find_product("P999")
+
+        self.assertIsNone(result)
+
+    def test_remove_existing_product(self):
+        self.inventory_a.add_product(self.product)
+
+        result = self.inventory_a.remove_product("P001")
+
+        self.assertTrue(result)
+        self.assertIsNone(self.inventory_a.find_product("P001"))
+
+    def test_remove_missing_product(self):
+        result = self.inventory_a.remove_product("P999")
+
+        self.assertFalse(result)
+
+    def test_transfer_between_inventories(self):
+        self.inventory_a.add_product(self.product)
+        self.inventory_a.remove_product("P001")
+        self.inventory_b.add_product(self.product)
+
+        self.assertIsNone(self.inventory_a.find_product("P001"))
+        self.assertIs(
+            self.inventory_b.find_product("P001"),
+            self.product
+        )
+
+    def test_duplicate_product_rejected(self):
+        self.assertTrue(self.inventory_a.add_product(self.product))
+        self.assertFalse(self.inventory_a.add_product(self.product))
+        self.assertEqual(len(self.inventory_a._products), 1)
 
 if __name__ == "__main__":
     unittest.main()
