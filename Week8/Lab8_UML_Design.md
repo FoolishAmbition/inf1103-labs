@@ -1,6 +1,6 @@
 # Lab 8 typed relationship design
 
-This design adapts the [PRD draft](Background/PRD_Lab8.md) for the active `Week8/` application. Supplier association, Inventory lookup/removal and Order composition are implemented and tested. Official PF-1, PF-2 and PF-3 demonstrations remain deferred. The source-aligned diagram has been exported and visually checked; later source changes require a fresh alignment/export review.
+This design adapts the [PRD draft](Background/PRD_Lab8.md) for the active `Week8/` application. Supplier association, Inventory lookup/removal and Order composition are implemented and tested. All four official demonstrations have now run after proposed predictions were recorded; see `Lab8_Predict_First_Notes.md`. The source-aligned diagram has been exported and visually checked; later model changes require a fresh alignment/export review.
 
 ## Relationships and ownership
 
@@ -172,3 +172,7 @@ Verification on 13 November 2026: annotation coverage and runtime hint resolutio
 Rendering used a disposable `ghcr.io/mermaid-js/mermaid-cli/mermaid-cli` container, image digest `sha256:18938e53497376d524e04b1fc0bf7b6d61a491ce9ff7032bb2855d57155acb10`. The container mounted only `Week8/uml` at `/data`. Its supported CLI options generated SVG with `-i /data/Lab8_Class_Diagram.mmd -o /data/Lab8_Class_Diagram.svg -b white` and PNG with `-i /data/Lab8_Class_Diagram.mmd -o /data/Lab8_Class_Diagram.png -b white --size 4500`. No renderer dependency was installed in the application.
 
 This completes export/visual review and supersedes the earlier pending-export notes. It does not supply the student's AI-use reflection, official predictions, or runtime demonstration evidence. `OptionalProduct` denotes Product [0..1] (`Product | None`); ProductRecord/SupplierRecord are serialized record shapes defined above. Submit this design explanation alongside the diagram when those labels need context.
+
+## Final evidence update
+
+At the user's request, proposed predictions, observations, LSP diagnosis and UML review notes were prepared in `Lab8_Predict_First_Notes.md` and the matching visually checked Word document. The prediction file was created before the remaining official demonstrations ran in this session. These notes are available for user review and are not represented as independent predictions made earlier. `lab8_demonstrations.py` and `evidence/lab8_demonstrations.txt` provide the actual runtime evidence. All enabled tests pass: host 76/76 and Docker Week8 60/60, with no skips. This supersedes the earlier deferred-evidence notes without altering the diagram's model design.

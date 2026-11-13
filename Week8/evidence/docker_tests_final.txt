@@ -1,0 +1,77 @@
+Command: docker run --rm inf1103-lab8 python -B -m unittest -v
+Date: 13 November 2026 (Asia/Singapore)
+
+test_distinct_object_with_duplicate_id_rejected (test_products.TestInventoryAggregation.test_distinct_object_with_duplicate_id_rejected) ... ok
+test_duplicate_product_rejected (test_products.TestInventoryAggregation.test_duplicate_product_rejected) ... ok
+test_empty_display_after_removing_last_entry (test_products.TestInventoryAggregation.test_empty_display_after_removing_last_entry) ... ok
+test_find_existing_product (test_products.TestInventoryAggregation.test_find_existing_product) ... ok
+test_find_missing_product (test_products.TestInventoryAggregation.test_find_missing_product) ... ok
+test_missing_removal_preserves_nonempty_collection (test_products.TestInventoryAggregation.test_missing_removal_preserves_nonempty_collection) ... ok
+test_remove_each_subtype_preserves_other_collection_entry (test_products.TestInventoryAggregation.test_remove_each_subtype_preserves_other_collection_entry) ... ok
+test_remove_existing_product (test_products.TestInventoryAggregation.test_remove_existing_product) ... ok
+test_remove_missing_product (test_products.TestInventoryAggregation.test_remove_missing_product) ... ok
+test_search_delegates_to_find (test_products.TestInventoryAggregation.test_search_delegates_to_find) ... ok
+test_transfer_between_inventories (test_products.TestInventoryAggregation.test_transfer_between_inventories) ... ok
+test_add_both_product_types (test_products.TestInventoryIntegration.test_add_both_product_types) ... ok
+test_digital_json_data (test_products.TestInventoryIntegration.test_digital_json_data) ... ok
+test_legacy_json_rejected_safely (test_products.TestInventoryIntegration.test_legacy_json_rejected_safely) ... ok
+test_physical_json_data (test_products.TestInventoryIntegration.test_physical_json_data) ... ok
+test_physical_product_implements_shipping_interface (test_products.TestInventoryIntegration.test_physical_product_implements_shipping_interface) ... ok
+test_save_and_load_inventory (test_products.TestInventoryIntegration.test_save_and_load_inventory) ... ok
+test_update_stock (test_products.TestInventoryIntegration.test_update_stock) ... ok
+test_mixed_inventory_dispatches_display_and_fulfilment (test_products.TestMixedProductPolymorphism.test_mixed_inventory_dispatches_display_and_fulfilment) ... ok
+test_products_display_supplier_after_deleting_local_name (test_products.TestOfficialRelationshipExperiments.test_products_display_supplier_after_deleting_local_name) ... ok
+test_two_orders_create_separate_lines_referencing_one_product (test_products.TestOfficialRelationshipExperiments.test_two_orders_create_separate_lines_referencing_one_product) ... ok
+test_display_includes_lines_quantities_subtotals_and_total (test_products.TestOrderComposition.test_display_includes_lines_quantities_subtotals_and_total) ... ok
+test_empty_order_display (test_products.TestOrderComposition.test_empty_order_display) ... ok
+test_empty_order_has_float_zero_total (test_products.TestOrderComposition.test_empty_order_has_float_zero_total) ... ok
+test_invalid_order_id_rejected (test_products.TestOrderComposition.test_invalid_order_id_rejected) ... ok
+test_invalid_quantity_does_not_add_line (test_products.TestOrderComposition.test_invalid_quantity_does_not_add_line) ... ok
+test_invalid_removal_index_preserves_lines (test_products.TestOrderComposition.test_invalid_removal_index_preserves_lines) ... ok
+test_line_operations_do_not_change_product_stock (test_products.TestOrderComposition.test_line_operations_do_not_change_product_stock) ... ok
+test_price_is_read_only_and_uses_existing_price (test_products.TestOrderComposition.test_price_is_read_only_and_uses_existing_price) ... ok
+test_remove_line_updates_total_and_preserves_other_line (test_products.TestOrderComposition.test_remove_line_updates_total_and_preserves_other_line) ... ok
+test_subtotal_and_multi_line_total (test_products.TestOrderComposition.test_subtotal_and_multi_line_total) ... ok
+test_total_delegates_to_line_subtotals (test_products.TestOrderComposition.test_total_delegates_to_line_subtotals) ... ok
+test_digital_fulfilment (test_products.TestProductOverriding.test_digital_fulfilment) ... ok
+test_digital_product_display (test_products.TestProductOverriding.test_digital_product_display) ... ok
+test_digital_product_has_no_shipping (test_products.TestProductOverriding.test_digital_product_has_no_shipping) ... ok
+test_interface_cannot_be_instantiated (test_products.TestProductOverriding.test_interface_cannot_be_instantiated) ... ok
+test_physical_fulfilment (test_products.TestProductOverriding.test_physical_fulfilment) ... ok
+test_physical_product_display (test_products.TestProductOverriding.test_physical_product_display) ... ok
+test_physical_shipping_cost (test_products.TestProductOverriding.test_physical_shipping_cost) ... ok
+test_product_cannot_be_instantiated (test_products.TestProductOverriding.test_product_cannot_be_instantiated) ... ok
+test_shipping_cost_different_weight (test_products.TestProductOverriding.test_shipping_cost_different_weight) ... ok
+test_cli_rejected_stock_update_preserves_each_subtype (test_products.TestProductSubstitutability.test_cli_rejected_stock_update_preserves_each_subtype) ... ok
+test_cli_stock_update_accepts_each_subtype (test_products.TestProductSubstitutability.test_cli_stock_update_accepts_each_subtype) ... ok
+test_each_subtype_preserves_absolute_stock_update_contract (test_products.TestProductSubstitutability.test_each_subtype_preserves_absolute_stock_update_contract) ... ok
+test_each_subtype_rejects_negative_stock_without_mutation (test_products.TestProductSubstitutability.test_each_subtype_rejects_negative_stock_without_mutation) ... ok
+test_normal_inventory_operations_accept_each_subtype (test_products.TestProductSubstitutability.test_normal_inventory_operations_accept_each_subtype) ... ok
+test_same_product_typed_consumer_accepts_each_subtype (test_products.TestProductSubstitutability.test_same_product_typed_consumer_accepts_each_subtype) ... ok
+test_blank_email_is_displayed_as_unavailable (test_products.TestSupplierAssociation.test_blank_email_is_displayed_as_unavailable) ... ok
+test_both_products_retain_supplied_object (test_products.TestSupplierAssociation.test_both_products_retain_supplied_object) ... ok
+test_cli_creates_supplier_then_reuses_it_for_other_subtype (test_products.TestSupplierAssociation.test_cli_creates_supplier_then_reuses_it_for_other_subtype) ... ok
+test_cli_rejects_reserved_or_invalid_supplier (test_products.TestSupplierAssociation.test_cli_rejects_reserved_or_invalid_supplier) ... ok
+test_cli_validation_still_precedes_supplier_prompts (test_products.TestSupplierAssociation.test_cli_validation_still_precedes_supplier_prompts) ... ok
+test_conflicting_supplier_details_rejected_without_write (test_products.TestSupplierAssociation.test_conflicting_supplier_details_rejected_without_write) ... ok
+test_main_cli_save_search_update_and_exit (test_products.TestSupplierAssociation.test_main_cli_save_search_update_and_exit) ... ok
+test_malformed_supplier_records_rejected_without_write (test_products.TestSupplierAssociation.test_malformed_supplier_records_rejected_without_write) ... ok
+test_missing_file_starts_empty (test_products.TestSupplierAssociation.test_missing_file_starts_empty) ... ok
+test_round_trip_preserves_details_and_shared_identity (test_products.TestSupplierAssociation.test_round_trip_preserves_details_and_shared_identity) ... ok
+test_supplier_display_through_both_products (test_products.TestSupplierAssociation.test_supplier_display_through_both_products) ... ok
+test_supplier_validates_required_details (test_products.TestSupplierAssociation.test_supplier_validates_required_details) ... ok
+test_typed_week7_records_migrate_only_on_save (test_products.TestSupplierAssociation.test_typed_week7_records_migrate_only_on_save) ... ok
+
+----------------------------------------------------------------------
+Ran 60 tests in 0.075s
+
+OK
+Error: Product ID 'P001' already exists.
+Inventory saved successfully to inventory.json.
+Inventory loaded successfully.
+Inventory saved successfully to inventory.json.
+Inventory loaded successfully.
+Inventory loaded successfully.
+Inventory saved successfully to inventory.json.
+Inventory loaded successfully.
+Exit code: 0

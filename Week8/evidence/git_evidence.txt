@@ -1,0 +1,30 @@
+Command: git log --oneline -12
+204166b docs(lab8): export source-aligned class diagram
+8d85a20 docs(lab8): record Docker verification and submission gaps
+e02e14d test(lab8): prepare mixed product dispatch demonstration
+5de8178 test(lab8): verify product substitutability
+5844262 docs(lab8): align UML with typed relationships
+dc416b2 feat(lab8): compose orders from order lines
+dad70a0 feat(lab8): add typed inventory transfer operations
+0f53e61 feat(lab8): implement inventory aggregation and product transfer
+202ca77 feat(lab8): associate products with suppliers
+b42fc99 docs(lab8): outline typed relationship design
+cdf5234 docs(lab8): record verified baseline and design review
+b6aedc0 Added and copied files from week 7 lab to week 8
+
+Command: git status --short
+ M Week8/test_products.py
+?? .lab8_artifacts/
+?? Background/
+?? Week8.zip
+?? Week8/Lab8_Predict_First_Notes.docx
+?? Week8/Lab8_Predict_First_Notes.md
+?? Week8/evidence/docker_build_final.txt
+?? Week8/evidence/docker_cli_final.txt
+?? Week8/evidence/docker_tests_final.txt
+?? Week8/evidence/host_tests_final.txt
+?? Week8/evidence/lab8_demonstrations.txt
+?? Week8/lab8_demonstrations.py
+
+Last separately verified remote: origin/lab8 = 204166bcabf0e471f7ade43e963954ad58144eca
+Final submission changes are not yet committed or pushed.

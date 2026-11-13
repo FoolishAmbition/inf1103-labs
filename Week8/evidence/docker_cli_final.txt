@@ -1,0 +1,103 @@
+Command: docker run --rm -i inf1103-lab8
+Date: 13 November 2026 (Asia/Singapore)
+
+# INVENTORY MANAGEMENT SYSTEM (OOP VERSION)
+
+Inventory loaded successfully.
+
+MENU
+1. Display All Products
+2. Add Product
+3. Update Stock
+4. Search Product
+5. Save Inventory
+6. Exit
+
+Enter option:
+Current Inventory
+
+ID: P001 | Name: Laptop | Price: $1200.00 | Stock: 5
+Supplier: UNKNOWN | Name: Unknown supplier | Email: Not provided
+Weight: 2.5 kg
+ID: D001 | Name: Antivirus | Price: $49.90 | Stock: 20
+Supplier: UNKNOWN | Name: Unknown supplier | Email: Not provided
+Download Size: 500.0 MB
+
+MENU
+1. Display All Products
+2. Add Product
+3. Update Stock
+4. Search Product
+5. Save Inventory
+6. Exit
+
+Enter option:
+Search Product
+Enter Product ID:
+Product Found
+
+ID: P001 | Name: Laptop | Price: $1200.00 | Stock: 5
+Supplier: UNKNOWN | Name: Unknown supplier | Email: Not provided
+Weight: 2.5 kg
+
+MENU
+1. Display All Products
+2. Add Product
+3. Update Stock
+4. Search Product
+5. Save Inventory
+6. Exit
+
+Enter option:
+Update Stock
+Enter Product ID:
+Product Found:
+Name: Antivirus
+Current Stock: 20
+
+New Stock Quantity:
+Stock updated successfully!
+
+MENU
+1. Display All Products
+2. Add Product
+3. Update Stock
+4. Search Product
+5. Save Inventory
+6. Exit
+
+Enter option:
+Search Product
+Enter Product ID:
+Product Found
+
+ID: D001 | Name: Antivirus | Price: $49.90 | Stock: 25
+Supplier: UNKNOWN | Name: Unknown supplier | Email: Not provided
+Download Size: 500.0 MB
+
+MENU
+1. Display All Products
+2. Add Product
+3. Update Stock
+4. Search Product
+5. Save Inventory
+6. Exit
+
+Enter option:
+Saving inventory...
+Inventory saved successfully to inventory.json.
+
+MENU
+1. Display All Products
+2. Add Product
+3. Update Stock
+4. Search Product
+5. Save Inventory
+6. Exit
+
+Enter option:
+Saving inventory before exit...
+Inventory saved successfully to inventory.json.
+
+Thank you for using Inventory Management System. Program terminated.
+Exit code: 0

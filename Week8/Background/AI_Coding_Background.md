@@ -9,6 +9,8 @@ I am a Year 1 Software Engineering student at Singapore Institute of Technology 
 - Work through one small Git milestone at a time using an implementation-first workflow. Skip teaching sessions, quizzes and understanding checks unless I request them.
 - Briefly explain what changed and why after each approved implementation. Do not require me to answer learning questions before proceeding.
 - For the four official Predict First exercises, let me record my own prediction before showing the corresponding output or running the demonstration. Help me compare the result afterwards.
+
+On 13 November 2026 I subsequently requested help completing all remaining submission work, including natural student-level wording for the notes. The assistant may prepare proposed predictions before execution and write observations from actual results. Keep their session timing accurate; do not invent earlier personal predictions or claim that I independently wrote the text. Prepared notes remain for my review before submission.
 - Show the proposed files, minimal changes, tests and commit boundary without a teaching prerequisite. Wait for explicit approval to edit. Run focused and regression tests, report actual results, then suggest a commit message. Ask separately before staging, committing and pushing.
 
 ## Coding preferences

@@ -1,36 +1,37 @@
 # Lab 8 submission checklist
 
-Verification date: 13 November 2026 (Asia/Singapore). Runtime source tested at commit `e02e14d`. This is a working checklist, not a declaration that the submission is complete.
+Final working-tree verification: 13 November 2026. Last committed/pushed boundary: 204166b; final evidence changes await separate Git approval.
 
-| Requirement | Current evidence | Remaining work |
-|---|---|---|
-| Python source and type hints | `main.py`; source/type review in `Lab8_UML_Design.md` | Include the final verified version in the submission. |
-| Automated relationship and LSP checks | `test_products.py`; host suites: 72 passed, 2 skipped | Complete the official deferred demonstrations and rerun affected tests. |
-| Supplier association | Implementation and ordinary association tests verified | Record PF-1 prediction, then run the deletion experiment and record observation/comparison. |
-| Inventory aggregation | Typed lookup/removal tests verified | Record PF-2 prediction before enabling the skipped transfer test; include post-removal Product-use evidence. |
-| Order composition | Single-order subtotal, multi-line total, display and removal tests verified | Record PF-3 prediction, then run the official two-order identity experiment and record observation/comparison. |
-| Polymorphism | Mixed-product test prepared but skipped | Record PF-4 prediction, then enable/run the mixed-loop test and record observation/comparison. |
-| LSP written diagnosis | Executable stock/substitution checks verified | Student writes the handout's 2–3 sentence diagnosis in their own words. |
-| Complete UML | Source-aligned [Mermaid](uml/Lab8_Class_Diagram.mmd), [SVG](uml/Lab8_Class_Diagram.svg) and [4500 × 2564 PNG](uml/Lab8_Class_Diagram.png), exported and visually checked | Include student-authored notes identifying one AI suggestion accepted and one changed. Include design notes explaining optional/record labels. |
-| Predict First Word document | No Lab 8 prediction document created | Include all four student-authored predictions, observations and comparisons, with predictions recorded before their respective demonstrations. `Week7Submission.docx` is a prior artifact, not the Lab 8 prediction document. |
-| Docker build | [Build log](evidence/docker_build.txt), exit 0 | Capture the course-required screenshot showing command and result. |
-| Docker tests | [Test log](evidence/docker_tests.txt): 58 discovered, 56 passed, 2 skipped, exit 0 | After deferred tests are enabled, rerun and capture final evidence. |
-| Docker CLI | [CLI log](evidence/docker_cli.txt), exit 0 | Capture the course-required program-run screenshot. Scripted stdin verified the CLI; no manual TTY screenshot was produced. |
-| Git history and push | Milestone pushes verified through `8d85a20` | Commit/push the UML export boundary after separate approvals; capture final Git history/status/push screenshots. |
-| Final package | Existing root `Week8.zip` left untouched and not audited | Assemble/review a final package once outstanding evidence is complete. Do not assume the existing ZIP contains current changes. |
+| Requirement | Evidence and status |
+|---|---|
+| Source and types | main.py and test_products.py; source-aligned design in Lab8_UML_Design.md. |
+| Four official demonstrations | lab8_demonstrations.py and evidence/lab8_demonstrations.txt. Proposed predictions recorded before these runs; observations added afterwards. |
+| Written notes | Lab8_Predict_First_Notes.docx and matching Markdown. All three Word pages rendered and visually checked. Includes the LSP diagnosis and accepted/changed UML suggestions. User review remains required. |
+| UML | uml/Lab8_Class_Diagram.mmd, .svg and .png. Source, XML and visual checks passed; PNG 4500 by 2564. |
+| Host regression | evidence/host_tests_final.txt: 76/76 passed, no skips, including 16 Week7 tests. |
+| Docker build | evidence/docker_build_final.txt: exit 0. Dockerfile unchanged. |
+| Docker tests | evidence/docker_tests_final.txt: Week8 60/60 passed, no skips, exit 0. |
+| Docker program | evidence/docker_cli_final.txt: display, search, digital stock update, save and normal exit passed; host inventory unchanged. Earlier add/reuse verification remains in evidence/docker_cli.txt. |
+| Evidence images | Six PNGs in evidence/screenshots/ show browser-rendered views of actual saved output. They are explicitly labelled as log views, not native terminal screenshots. Native capture failed because the helper could not capture the minimized evidence window. |
+| Git | evidence/git_evidence.txt records history/status and the verified remote hash. Final changes have not been staged, committed or pushed. |
+| Package | New root Lab8_Submission_2026-11-13.zip: 33 files with a SHA-256 manifest. ZIP integrity and all payload hashes verified; extracted Week8 suite passed 60/60. Existing Week8.zip is unchanged. |
 
-## Verified Docker workflow
+## Run the submitted project
 
-Run from `Week8/`:
+From the extracted Week8 folder:
 
 ```text
-docker build --progress=plain -t inf1103-lab8 .
+python -B -m unittest -v
+python -B lab8_demonstrations.py
+docker build -t inf1103-lab8 .
 docker run --rm inf1103-lab8 python -B -m unittest -v
 docker run --rm -it inf1103-lab8
 ```
 
-Docker Desktop initially had no running Linux engine. Starting it allowed the build to proceed. The saved build log is the confirmed successful run, with its actual exit code; it does not include the initial failed attempt. Console output was captured with trailing prompt whitespace removed. The Dockerfile needed no edits and uses Python 3.11.
+Docker copies the application, tests and inventory only. Run the standalone demonstration script with host Python; the corresponding relationship assertions also run in the container tests.
 
-The CLI verification used `docker run --rm -i inf1103-lab8` with scripted stdin and no host mounts. Actions were: display sample inventory; add physical P099 USB Adapter (25.00, stock 4, weight 0.2) with demo supplier S099; add digital D099 Demo Download (12.50, stock 10, size 100) reusing S099; search P099; update D099 stock to 7; search D099; save; exit with save. Supplier name/email were explicit test data, `Demo Supplier` / `demo@example.com`. The container was removed afterwards; host `inventory.json` was unchanged.
+## Review before handing in
 
-All four official demonstrations remain deferred. Logs verify the executed operations only; text logs do not replace the handout's screenshot requirements.
+Read the prepared notes and ensure their explanations reflect your understanding. The record identifies in-session proposed predictions rather than claiming earlier independent answers. Optional reflection was not invented.
+
+The labelled log-view images preserve actual output but are not native terminal screenshots. If the instructor requires a terminal window, capture the commands above and Git log/status/push in your own terminal. Final Git staging, committing and pushing remain separate approval steps.

@@ -409,10 +409,14 @@ class TestInventoryAggregation(unittest.TestCase):
 
         self.assertFalse(result)
 
-    @unittest.skip("PF-2 deferred until the student's prediction is recorded")
     def test_transfer_between_inventories(self):
         self.inventory_a.add_product(self.product)
         self.inventory_a.remove_product("P001")
+
+        self.assertIs(self.product.update_stock(8), True)
+        self.assertEqual(self.product._stock, 8)
+        with redirect_stdout(StringIO()):
+            self.product.display_information()
         self.inventory_b.add_product(self.product)
 
         self.assertIsNone(self.inventory_a.find_product("P001"))
@@ -556,7 +560,6 @@ class TestProductSubstitutability(unittest.TestCase):
 
 
 class TestMixedProductPolymorphism(unittest.TestCase):
-    @unittest.skip("PF-4 deferred until the student's prediction is recorded")
     def test_mixed_inventory_dispatches_display_and_fulfilment(self):
         supplier = Supplier("S001", "Test supplier", "test@example.com")
         physical = PhysicalProduct("P001", "Laptop", 1200, 5, 2.5, supplier)
@@ -587,6 +590,37 @@ class TestMixedProductPolymorphism(unittest.TestCase):
         self.assertEqual(lines.count(digital.get_fulfilment_info()), 1)
         self.assertIn("P001", output.getvalue())
         self.assertIn("D001", output.getvalue())
+
+
+class TestOfficialRelationshipExperiments(unittest.TestCase):
+    def test_products_display_supplier_after_deleting_local_name(self):
+        supplier = Supplier("S001", "Demo Supplier", "demo@example.com")
+        physical = PhysicalProduct("P001", "Laptop", 1200, 5, 2.5, supplier)
+        digital = DigitalProduct("D001", "Antivirus", 49.90, 20, 500, supplier)
+        supplier_id = id(supplier)
+        del supplier
+        output = StringIO()
+        with redirect_stdout(output):
+            physical.supplier.display_information()
+            digital.supplier.display_information()
+        self.assertEqual(id(physical.supplier), supplier_id)
+        self.assertIs(physical.supplier, digital.supplier)
+        self.assertEqual(output.getvalue().count("Supplier: S001"), 2)
+
+    def test_two_orders_create_separate_lines_referencing_one_product(self):
+        supplier = Supplier("S001", "Demo Supplier", "demo@example.com")
+        product = PhysicalProduct("P001", "Laptop", 1200, 5, 2.5, supplier)
+        first = Order("O001")
+        second = Order("O002")
+        first.add_order_line(product, 1)
+        second.add_order_line(product, 2)
+        self.assertIsNot(first._order_lines[0], second._order_lines[0])
+        self.assertIs(first._order_lines[0].product, product)
+        self.assertIs(second._order_lines[0].product, product)
+        self.assertTrue(first.remove_order_line(0))
+        self.assertEqual(first.calculate_total(), 0.0)
+        self.assertEqual(second.calculate_total(), 2400.0)
+        self.assertEqual(product.price, 1200.0)
 
 
 class TestOrderComposition(unittest.TestCase):
