@@ -15,7 +15,7 @@ This provisional design adapts the [PRD draft](Background/PRD_Lab8.md) for the a
 
 Multiplicity at an endpoint counts instances at that endpoint for one object at the opposite endpoint. The hollow diamond marks the aggregating whole; the filled diamond marks the composing whole. Python references and garbage collection do not automatically enforce the intended ownership rules.
 
-## Provisional typed class diagram
+## Source-aligned typed class diagram
 
 ```mermaid
 classDiagram
@@ -91,6 +91,7 @@ classDiagram
     Inventory "0..*" o-- "0..*" Product
     Order "1" *-- "0..*" OrderLine
     OrderLine "0..*" -- "1" Product
+    note for Product "price is a read-only property backed by _price"
 ```
 
 ## Types and preserved contracts
@@ -111,7 +112,7 @@ classDiagram
 | Supplier association | Milestone 1 decisions below; the official deletion demonstration remains deferred until the student records a prediction. |
 | Inventory aggregation | Typed lookup/removal implemented; lookup delegation and boolean meanings recorded above. Shared-membership allowance unchanged. Official PF-2 demonstration deferred. |
 | Order composition | Milestone 3 approved design below; PF-3 identity demonstration remains deferred. |
-| Type and UML review | Resolve serialization placeholders, synchronize all signatures and attributes, check multiplicities against implementation and export the complete submission diagram. |
+| Type and UML review | Source signatures, attributes, serialized shapes and multiplicities reviewed in Milestone 4. Final diagram export and student-authored AI reflection remain submission work. |
 
 Order checkout, order persistence and additional menu actions remain outside the proposed scope. All four official Predict First answers and the student's AI-diagram reflection (one suggestion accepted and one changed) remain to be recorded in the student's own words. This design contains no demonstration output.
 
@@ -142,3 +143,22 @@ Inventory holds `list[Product]`; constructor, add, find, search, remove and disp
 - These ownership rules describe the supported API. Python does not prevent deliberate external access to underscore-prefixed storage or independently constructing an OrderLine.
 - Orders are not persisted and no CLI option is added. Focused tests cover one-order behavior; the official two-order identity experiment remains deferred until PF-3 is recorded.
 - Verification: 11 focused Order tests passed. Full Week7/Week8 regression discovered 67 tests: 66 passed, 1 PF-2 test skipped. The Order signatures above match the implemented API; final whole-system type/UML review remains Milestone 4.
+
+## Milestone 4 type and UML review
+
+All 39 authored functions/methods in `main.py` have annotated non-self parameters and return values. Product's common fields and both subtype-specific fields now have explicit annotations. Supplier, Inventory, Order and OrderLine references and collections already carried their specific types. No `Any` is used. Type hints communicate the intended contract; they do not validate all runtime values.
+
+| Source area | Reviewed types |
+|---|---|
+| Product | `_product_id: str`, `_name: str`, `_price: float`, `_stock: int`, `supplier: Supplier`; read-only `price -> float`; stock update returns bool; display returns None; fulfilment returns str. |
+| Subtypes and shipping interface | `_weight: float`, `_download_size: float`; display returns None; fulfilment returns str; shipping returns float. Existing virtual ABC registration is preserved. |
+| Inventory | `list[Product]`; add/remove return bool; find/search return Product or None; constructor/display return None. |
+| Orders | `order_id: str`, `list[OrderLine]`, `product: Product`, `quantity: int`; subtotal/total return float; add/display return None; indexed removal returns bool. |
+| Persistence | `load_inventory() -> Inventory`, `save_inventory(inventory: Inventory) -> None`, supplier cache `dict[str, Supplier]`, serialized collection `list[ProductRecord]`. |
+| CLI | All inventory handlers accept Inventory and return None; `print_menu()` and `main()` return None. Local optional supplier is `Supplier | None`; constructed product variables use the Product base type. |
+
+The two TypedDict record shapes are defined in the types section above. They describe serializer output, not an automatic validator for untrusted JSON: existing explicit loading checks still apply. Legacy typed input may omit supplier data as documented in Milestone 1. Optional subtype fields allow the common serializer to be extended by either subtype.
+
+Reviewed all diagram attributes, methods and relationship endpoints against source. Association edges have no ownership diamonds; Inventory uses a hollow diamond and permits shared membership; Order uses a filled diamond and each line has exactly one intended owner. `OptionalProduct` means a Product return multiplicity of 0..1. The read-only price note distinguishes a property from a second stored price field. Free CLI/persistence functions are described above rather than represented as domain classes.
+
+Verification on 13 November 2026: annotation coverage and runtime hint resolution passed; stripping annotations produced the same executable syntax tree as the preceding commit. Full regression: 66 passed, 1 PF-2 skip. No static type checker was installed or run, no new dependency was added, and the Mermaid diagram has not been exported or visually verified for submission. The student's accepted/changed AI suggestions remain to be recorded in their own words.

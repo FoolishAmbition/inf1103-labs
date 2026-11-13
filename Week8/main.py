@@ -58,23 +58,23 @@ class Supplier:
 class Product(ABC):
     def __init__(self, product_id: str, name: str, price: float,
                  stock: int, supplier: Supplier) -> None:
-        self._product_id = product_id
-        self._name = name
-        self._price = price
-        self._stock = stock
+        self._product_id: str = product_id
+        self._name: str = name
+        self._price: float = price
+        self._stock: int = stock
         self.supplier: Supplier = supplier
 
     @property
     def price(self) -> float:
         return float(self._price)
 
-    def update_stock(self, quantity):
+    def update_stock(self, quantity: int) -> bool:
         if quantity >= 0:
             self._stock = quantity
             return True
         return False
 
-    def display_information(self):
+    def display_information(self) -> None:
         print(f"ID: {self._product_id} | Name: {self._name} | Price: ${self._price:.2f} | Stock: {self._stock}")
         self.supplier.display_information()
 
@@ -88,7 +88,7 @@ class Product(ABC):
         }
     
     @abstractmethod
-    def get_fulfilment_info(self):
+    def get_fulfilment_info(self) -> str:
         pass
 
 # =============================================================
@@ -97,7 +97,7 @@ class Product(ABC):
 class CanBeShipped(ABC):
 
     @abstractmethod
-    def calculate_shipping_cost(self):
+    def calculate_shipping_cost(self) -> float:
         pass
 
 # =============================================================
@@ -107,16 +107,16 @@ class PhysicalProduct(Product):
     def __init__(self, product_id: str, name: str, price: float,
                  stock: int, weight: float, supplier: Supplier) -> None:
         super().__init__(product_id, name, price, stock, supplier)
-        self._weight = weight
+        self._weight: float = weight
 
-    def display_information(self):
+    def display_information(self) -> None:
         super().display_information()
         print(f"Weight: {self._weight} kg")
 
-    def get_fulfilment_info(self):
+    def get_fulfilment_info(self) -> str:
         return "This product requires physical shipping."
     
-    def calculate_shipping_cost(self):
+    def calculate_shipping_cost(self) -> float:
         return self._weight * 5.00
     
     def to_dict(self) -> ProductRecord:
@@ -135,13 +135,13 @@ class DigitalProduct(Product):
     def __init__(self, product_id: str, name: str, price: float,
                  stock: int, download_size: float, supplier: Supplier) -> None:
         super().__init__(product_id, name, price, stock, supplier)
-        self._download_size = download_size
+        self._download_size: float = download_size
 
-    def display_information(self):
+    def display_information(self) -> None:
         super().display_information()
         print(f"Download Size: {self._download_size} MB")
     
-    def get_fulfilment_info(self):
+    def get_fulfilment_info(self) -> str:
         return "This product is delivered digitally."
     
     def to_dict(self) -> ProductRecord:
@@ -242,7 +242,7 @@ class Order:
 # =============================================================
 # FILE HANDLING
 # =============================================================
-def load_inventory():
+def load_inventory() -> Inventory:
     inventory = Inventory()
     suppliers: dict[str, Supplier] = {}
 
@@ -274,6 +274,7 @@ def load_inventory():
                         f"Conflicting details for supplier {candidate.supplier_id}"
                     )
 
+                product: Product
                 if product_type == "physical":
                     product = PhysicalProduct(
                         item["id"],
@@ -315,8 +316,8 @@ def load_inventory():
 
     return inventory
 
-def save_inventory(inventory):
-    data_to_save = [product.to_dict() for product in inventory._products]
+def save_inventory(inventory: Inventory) -> None:
+    data_to_save: list[ProductRecord] = [product.to_dict() for product in inventory._products]
     with open(INVENTORY_FILE, "w") as file:
         json.dump(data_to_save, file, indent=4)
     print("Inventory saved successfully to inventory.json.")
@@ -325,7 +326,7 @@ def save_inventory(inventory):
 # =============================================================
 # MENU HANDLERS
 # =============================================================
-def menu_add_product(inventory):
+def menu_add_product(inventory: Inventory) -> None:
     print("\nSelect Product Type")
     print("1. Physical Product")
     print("2. Digital Product")
@@ -375,7 +376,7 @@ def menu_add_product(inventory):
         print("Error: Supplier ID UNKNOWN is reserved for missing details.")
         return
 
-    supplier = None
+    supplier: Supplier | None = None
     for product in inventory._products:
         if product.supplier.supplier_id == supplier_id:
             supplier = product.supplier
@@ -392,6 +393,7 @@ def menu_add_product(inventory):
     else:
         print(f"Reusing supplier: {supplier.name}")
 
+    new_product: Product
     if product_type == "1":
         new_product = PhysicalProduct(
             product_id, name, price, stock, weight, supplier
@@ -404,7 +406,7 @@ def menu_add_product(inventory):
     if inventory.add_product(new_product):
         print("\nProduct added successfully!")
 
-def menu_update_stock(inventory):
+def menu_update_stock(inventory: Inventory) -> None:
     product_id = input("Enter Product ID: ").strip()
     product = inventory.search_product(product_id)
 
@@ -425,7 +427,7 @@ def menu_update_stock(inventory):
         print("Product not found.")
 
 
-def menu_search_product(inventory):
+def menu_search_product(inventory: Inventory) -> None:
     product_id = input("Enter Product ID: ").strip()
     product = inventory.search_product(product_id)
     if product:
@@ -435,7 +437,7 @@ def menu_search_product(inventory):
         print("Product not found.")
 
 
-def print_menu():
+def print_menu() -> None:
     print("\nMENU")
     print("1. Display All Products")
     print("2. Add Product")
@@ -448,7 +450,7 @@ def print_menu():
 # =============================================================
 # MAIN PROGRAM
 # =============================================================
-def main():
+def main() -> None:
     print("# INVENTORY MANAGEMENT SYSTEM (OOP VERSION)\n")
     inventory = load_inventory()
 
