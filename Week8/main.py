@@ -64,6 +64,10 @@ class Product(ABC):
         self._stock = stock
         self.supplier: Supplier = supplier
 
+    @property
+    def price(self) -> float:
+        return float(self._price)
+
     def update_stock(self, quantity):
         if quantity >= 0:
             self._stock = quantity
@@ -188,6 +192,52 @@ class Inventory:
         print("\nCurrent Inventory\n")
         for product in self._products:
             product.display_information()
+
+# =============================================================
+# ORDER CLASSES
+# =============================================================
+class OrderLine:
+    def __init__(self, product: Product, quantity: int) -> None:
+        if isinstance(quantity, bool) or not isinstance(quantity, int) or quantity <= 0:
+            raise ValueError("Order quantity must be a positive integer.")
+        self.product: Product = product
+        self.quantity: int = quantity
+
+    def calculate_subtotal(self) -> float:
+        return self.product.price * self.quantity
+
+
+class Order:
+    def __init__(self, order_id: str) -> None:
+        if not isinstance(order_id, str) or not order_id.strip():
+            raise ValueError("Order ID must be a nonempty string.")
+        self.order_id: str = order_id
+        self._order_lines: list[OrderLine] = []
+
+    def add_order_line(self, product: Product, quantity: int) -> None:
+        # Lines are created by their owning Order, not supplied by callers.
+        self._order_lines.append(OrderLine(product, quantity))
+
+    def remove_order_line(self, index: int) -> bool:
+        if index < 0 or index >= len(self._order_lines):
+            return False
+        self._order_lines.pop(index)
+        return True
+
+    def calculate_total(self) -> float:
+        total = 0.0
+        for order_line in self._order_lines:
+            total += order_line.calculate_subtotal()
+        return total
+
+    def display_information(self) -> None:
+        print(f"Order: {self.order_id}")
+        for index, order_line in enumerate(self._order_lines):
+            print(f"Line {index}")
+            order_line.product.display_information()
+            print(f"Quantity: {order_line.quantity} | Subtotal: ${order_line.calculate_subtotal():.2f}")
+        print(f"Total: ${self.calculate_total():.2f}")
+
 
 # =============================================================
 # FILE HANDLING

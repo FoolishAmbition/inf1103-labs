@@ -1,6 +1,6 @@
 # Lab 8 typed relationship design
 
-This provisional design adapts the [PRD draft](Background/PRD_Lab8.md) for the active `Week8/` application. Supplier association is implemented and tested in Milestone 1; its official deletion demonstration remains deferred. Inventory removal and Order classes remain proposed. Each implementation milestone still needs a focused proposal and explicit approval. The final submission diagram must be checked against the finished source and exported legibly.
+This provisional design adapts the [PRD draft](Background/PRD_Lab8.md) for the active `Week8/` application. Supplier association, Inventory lookup/removal and Order composition are implemented and tested. Official PF-1, PF-2 and PF-3 demonstrations remain deferred. Later milestones still need a focused proposal and explicit approval. The final submission diagram must be checked against the finished source and exported legibly.
 
 ## Relationships and ownership
 
@@ -74,7 +74,9 @@ classDiagram
         -List~OrderLine~ _order_lines
         +Order(order_id String)
         +add_order_line(product Product, quantity Integer) None
+        +remove_order_line(index Integer) Boolean
         +calculate_total() Real
+        +display_information() None
     }
     class OrderLine {
         +Product product
@@ -98,7 +100,7 @@ classDiagram
 - `List<Product>` and `List<OrderLine>` describe collection element types. `list[Product]` supports both existing concrete Product types through their common operations.
 - Implemented: `add_product(...) -> bool` preserves duplicate-ID rejection. `find_product(...) -> Product | None` contains the lookup loop; `search_product(...)` delegates to it for compatibility.
 - Preserve `update_stock(...) -> bool`: a nonnegative quantity sets absolute stock and succeeds; a negative quantity leaves stock unchanged and returns false.
-- Implemented: `remove_product(...) -> bool` returns true when an entry was removed, false for a missing ID. Proposed read-only `price` access remains for the Order milestone and will use `_price` as its source of truth.
+- Implemented: `remove_product(...) -> bool` returns true when an entry was removed, false for a missing ID. Read-only `price` access uses `_price` as its source of truth.
 - `SupplierRecord` is a Python TypedDict containing string fields `supplier_id`, `name` and `contact_email`. `ProductRecord` is a TypedDict with `id: str`, `name: str`, `price: float`, `stock: int` and `supplier: SupplierRecord`. Its subtype-specific fields `type: str`, `weight: float` and `download_size: float` are `NotRequired` because the common Product serializer builds the record before each subtype extends it. These are record descriptions, not domain classes.
 - Type hints communicate intent and support analysis tools. They do not automatically validate runtime values or enforce ownership.
 
@@ -108,7 +110,7 @@ classDiagram
 |---|---|
 | Supplier association | Milestone 1 decisions below; the official deletion demonstration remains deferred until the student records a prediction. |
 | Inventory aggregation | Typed lookup/removal implemented; lookup delegation and boolean meanings recorded above. Shared-membership allowance unchanged. Official PF-2 demonstration deferred. |
-| Order composition | Order ID uniqueness policy, quantity validation, read-only price access, line inspection and line-removal API or an approved scenario that removes the Order. Add any selected method signatures to the diagram before coding them. |
+| Order composition | Milestone 3 approved design below; PF-3 identity demonstration remains deferred. |
 | Type and UML review | Resolve serialization placeholders, synchronize all signatures and attributes, check multiplicities against implementation and export the complete submission diagram. |
 
 Order checkout, order persistence and additional menu actions remain outside the proposed scope. All four official Predict First answers and the student's AI-diagram reflection (one suggestion accepted and one changed) remain to be recorded in the student's own words. This design contains no demonstration output.
@@ -128,4 +130,15 @@ On 13 November 2026, the student distinguished association, aggregation and comp
 
 ## Milestone 2 implementation review
 
-Inventory holds `list[Product]`; constructor, add, find, search, remove and display methods have type annotations. The diagram's Inventory signatures now match the source. No transfer method or extra menu option is introduced: the existing add/remove API is the intended interface. Transfer evidence remains deferred until PF-2 is recorded. Order-related diagram elements remain provisional.
+Inventory holds `list[Product]`; constructor, add, find, search, remove and display methods have type annotations. The diagram's Inventory signatures now match the source. No transfer method or extra menu option is introduced: the existing add/remove API is the intended interface. Transfer evidence remains deferred until PF-2 is recorded.
+
+## Milestone 3 approved design
+
+- `Product.price` is a read-only property returning the current `_price` as a float. No second price field is stored. Order totals use current prices, not historical snapshots.
+- `OrderLine` stores `product: Product` and `quantity: int`. Construction rejects zero, negative, non-integer and boolean quantities with ValueError. `calculate_subtotal() -> float` multiplies product price by quantity.
+- `Order` validates a nonempty string ID. Callers supply unique IDs; no global registry is introduced. Its `_order_lines: list[OrderLine]` is internal storage. `add_order_line(product: Product, quantity: int) -> None` creates each line internally; no method accepts a prebuilt line or transfers one.
+- `remove_order_line(index: int) -> bool` uses a zero-based index. It returns false for an out-of-range index, including negative indexes, and true for a removed entry. Display shows each line's zero-based index, product information, quantity and subtotal, followed by the total.
+- `calculate_total() -> float` delegates to each line's subtotal method and starts from 0.0 for an empty order. Adding or removing lines does not change stock. Line inspection for tests uses the internal list; no public mutable collection is added.
+- These ownership rules describe the supported API. Python does not prevent deliberate external access to underscore-prefixed storage or independently constructing an OrderLine.
+- Orders are not persisted and no CLI option is added. Focused tests cover one-order behavior; the official two-order identity experiment remains deferred until PF-3 is recorded.
+- Verification: 11 focused Order tests passed. Full Week7/Week8 regression discovered 67 tests: 66 passed, 1 PF-2 test skipped. The Order signatures above match the implemented API; final whole-system type/UML review remains Milestone 4.

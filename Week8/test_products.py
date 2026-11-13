@@ -18,6 +18,7 @@ PhysicalProduct = main.PhysicalProduct
 DigitalProduct = main.DigitalProduct
 CanBeShipped = main.CanBeShipped
 Supplier = main.Supplier
+Order = main.Order
 
 class TestProductOverriding(unittest.TestCase):
 
@@ -457,6 +458,99 @@ class TestInventoryAggregation(unittest.TestCase):
         with redirect_stdout(output):
             self.inventory_a.display_all()
         self.assertIn("Inventory is empty", output.getvalue())
+
+class TestOrderComposition(unittest.TestCase):
+    def setUp(self):
+        supplier = Supplier("S001", "Test supplier", "test@example.com")
+        self.physical = PhysicalProduct("P001", "Laptop", 1200, 5, 2.5, supplier)
+        self.digital = DigitalProduct("D001", "Antivirus", 49.90, 20, 500, supplier)
+        self.order = Order("O001")
+
+    def test_empty_order_has_float_zero_total(self):
+        self.assertEqual(self.order.calculate_total(), 0.0)
+        self.assertIsInstance(self.order.calculate_total(), float)
+
+    def test_price_is_read_only_and_uses_existing_price(self):
+        for product in (self.physical, self.digital):
+            with self.subTest(product=type(product).__name__):
+                self.assertEqual(product.price, product._price)
+                self.assertIsInstance(product.price, float)
+                with self.assertRaises(AttributeError):
+                    product.price = 1.0
+
+    def test_subtotal_and_multi_line_total(self):
+        self.assertIsNone(self.order.add_order_line(self.physical, 2))
+        self.assertIsNone(self.order.add_order_line(self.digital, 3))
+        self.assertAlmostEqual(self.order._order_lines[0].calculate_subtotal(), 2400.0)
+        self.assertAlmostEqual(self.order._order_lines[1].calculate_subtotal(), 149.70)
+        self.assertAlmostEqual(self.order.calculate_total(), 2549.70)
+
+    def test_total_delegates_to_line_subtotals(self):
+        self.order.add_order_line(self.physical, 2)
+        self.order.add_order_line(self.digital, 3)
+        with patch.object(self.order._order_lines[0], "calculate_subtotal", return_value=10.0) as first:
+            with patch.object(self.order._order_lines[1], "calculate_subtotal", return_value=20.0) as second:
+                self.assertEqual(self.order.calculate_total(), 30.0)
+        first.assert_called_once_with()
+        second.assert_called_once_with()
+
+    def test_invalid_quantity_does_not_add_line(self):
+        self.order.add_order_line(self.physical, 1)
+        for quantity in (0, -1, 1.5, "2", True, False, None):
+            with self.subTest(quantity=quantity), self.assertRaises(ValueError):
+                self.order.add_order_line(self.digital, quantity)
+        self.assertEqual(len(self.order._order_lines), 1)
+        self.assertEqual(self.order.calculate_total(), 1200.0)
+
+    def test_invalid_order_id_rejected(self):
+        for order_id in ("", " ", None, 7):
+            with self.subTest(order_id=order_id), self.assertRaises(ValueError):
+                Order(order_id)
+
+    def test_remove_line_updates_total_and_preserves_other_line(self):
+        self.order.add_order_line(self.physical, 2)
+        self.order.add_order_line(self.digital, 3)
+        self.assertTrue(self.order.remove_order_line(0))
+        self.assertEqual(len(self.order._order_lines), 1)
+        self.assertIs(self.order._order_lines[0].product, self.digital)
+        self.assertAlmostEqual(self.order.calculate_total(), 149.70)
+        self.assertTrue(self.order.remove_order_line(0))
+        self.assertEqual(self.order.calculate_total(), 0.0)
+
+    def test_invalid_removal_index_preserves_lines(self):
+        self.assertFalse(self.order.remove_order_line(0))
+        self.order.add_order_line(self.physical, 1)
+        for index in (-1, 1, 100):
+            with self.subTest(index=index):
+                self.assertFalse(self.order.remove_order_line(index))
+                self.assertEqual(len(self.order._order_lines), 1)
+                self.assertEqual(self.order.calculate_total(), 1200.0)
+
+    def test_line_operations_do_not_change_product_stock(self):
+        self.order.add_order_line(self.physical, 10)
+        self.order.add_order_line(self.digital, 30)
+        self.order.remove_order_line(0)
+        self.assertEqual(self.physical._stock, 5)
+        self.assertEqual(self.digital._stock, 20)
+
+    def test_display_includes_lines_quantities_subtotals_and_total(self):
+        self.order.add_order_line(self.physical, 2)
+        self.order.add_order_line(self.digital, 3)
+        output = StringIO()
+        with redirect_stdout(output):
+            self.order.display_information()
+        for text in ("Order: O001", "Line 0", "Line 1", "Laptop", "Antivirus",
+                     "Quantity: 2", "Quantity: 3", "Subtotal: $2400.00",
+                     "Subtotal: $149.70", "Total: $2549.70"):
+            self.assertIn(text, output.getvalue())
+
+    def test_empty_order_display(self):
+        output = StringIO()
+        with redirect_stdout(output):
+            self.order.display_information()
+        self.assertIn("Order: O001", output.getvalue())
+        self.assertIn("Total: $0.00", output.getvalue())
+
 
 if __name__ == "__main__":
     unittest.main()
