@@ -1,19 +1,68 @@
 import json
 import os
 from abc import ABC, abstractmethod
+from typing import NotRequired, TypedDict
 
 INVENTORY_FILE = "inventory.json"
+UNKNOWN_SUPPLIER_ID = "UNKNOWN"
+
+
+class SupplierRecord(TypedDict):
+    supplier_id: str
+    name: str
+    contact_email: str
+
+
+class ProductRecord(TypedDict):
+    id: str
+    name: str
+    price: float
+    stock: int
+    supplier: SupplierRecord
+    type: NotRequired[str]
+    weight: NotRequired[float]
+    download_size: NotRequired[float]
+
+
+class Supplier:
+    def __init__(self, supplier_id: str, name: str,
+                 contact_email: str) -> None:
+        if not isinstance(supplier_id, str) or not supplier_id.strip():
+            raise ValueError("Supplier ID must be a nonempty string.")
+        if not isinstance(name, str) or not name.strip():
+            raise ValueError("Supplier name must be a nonempty string.")
+        if not isinstance(contact_email, str):
+            raise ValueError("Supplier email must be a string.")
+        if supplier_id == UNKNOWN_SUPPLIER_ID and (
+                name != "Unknown supplier" or contact_email != ""):
+            raise ValueError("Supplier ID UNKNOWN is reserved for missing details.")
+        self.supplier_id: str = supplier_id
+        self.name: str = name
+        self.contact_email: str = contact_email
+
+    def display_information(self) -> None:
+        email = self.contact_email or "Not provided"
+        print(f"Supplier: {self.supplier_id} | Name: {self.name} | Email: {email}")
+
+    def to_dict(self) -> SupplierRecord:
+        return {
+            "supplier_id": self.supplier_id,
+            "name": self.name,
+            "contact_email": self.contact_email
+        }
 
 
 # =============================================================
 # PRODUCT CLASS
 # =============================================================
 class Product(ABC):
-    def __init__(self, product_id, name, price, stock):
+    def __init__(self, product_id: str, name: str, price: float,
+                 stock: int, supplier: Supplier) -> None:
         self._product_id = product_id
         self._name = name
         self._price = price
         self._stock = stock
+        self.supplier: Supplier = supplier
 
     def update_stock(self, quantity):
         if quantity >= 0:
@@ -23,13 +72,15 @@ class Product(ABC):
 
     def display_information(self):
         print(f"ID: {self._product_id} | Name: {self._name} | Price: ${self._price:.2f} | Stock: {self._stock}")
+        self.supplier.display_information()
 
-    def to_dict(self):
+    def to_dict(self) -> ProductRecord:
         return {
             "id": self._product_id,
             "name": self._name,
             "price": self._price,
-            "stock": self._stock
+            "stock": self._stock,
+            "supplier": self.supplier.to_dict()
         }
     
     @abstractmethod
@@ -49,8 +100,9 @@ class CanBeShipped(ABC):
 # PHYSICAL PRODUCT CLASS
 # =============================================================
 class PhysicalProduct(Product):
-    def __init__(self, product_id, name, price, stock, weight):
-        super().__init__(product_id, name, price, stock)
+    def __init__(self, product_id: str, name: str, price: float,
+                 stock: int, weight: float, supplier: Supplier) -> None:
+        super().__init__(product_id, name, price, stock, supplier)
         self._weight = weight
 
     def display_information(self):
@@ -63,7 +115,7 @@ class PhysicalProduct(Product):
     def calculate_shipping_cost(self):
         return self._weight * 5.00
     
-    def to_dict(self):
+    def to_dict(self) -> ProductRecord:
         data = super().to_dict()
         data["type"] = "physical"
         data["weight"] = self._weight
@@ -76,8 +128,9 @@ CanBeShipped.register(PhysicalProduct)
 # DIGITAL PRODUCT CLASS
 # =============================================================
 class DigitalProduct(Product):
-    def __init__(self, product_id, name, price, stock, download_size):
-        super().__init__(product_id, name, price, stock)
+    def __init__(self, product_id: str, name: str, price: float,
+                 stock: int, download_size: float, supplier: Supplier) -> None:
+        super().__init__(product_id, name, price, stock, supplier)
         self._download_size = download_size
 
     def display_information(self):
@@ -87,7 +140,7 @@ class DigitalProduct(Product):
     def get_fulfilment_info(self):
         return "This product is delivered digitally."
     
-    def to_dict(self):
+    def to_dict(self) -> ProductRecord:
         data = super().to_dict()
         data["type"] = "digital"
         data["download_size"] = self._download_size
@@ -127,6 +180,7 @@ class Inventory:
 # =============================================================
 def load_inventory():
     inventory = Inventory()
+    suppliers: dict[str, Supplier] = {}
 
     if os.path.exists(INVENTORY_FILE):
         try:
@@ -135,6 +189,26 @@ def load_inventory():
 
             for item in data:
                 product_type = item.get("type")
+                # Old typed records have no supplier details; do not invent them.
+                supplier_data = item.get("supplier", {
+                    "supplier_id": UNKNOWN_SUPPLIER_ID,
+                    "name": "Unknown supplier",
+                    "contact_email": ""
+                })
+                if not isinstance(supplier_data, dict):
+                    raise ValueError("Supplier data must be an object.")
+                candidate = Supplier(
+                    supplier_data["supplier_id"], supplier_data["name"],
+                    supplier_data["contact_email"]
+                )
+                supplier = suppliers.get(candidate.supplier_id)
+                if supplier is None:
+                    supplier = candidate
+                    suppliers[supplier.supplier_id] = supplier
+                elif supplier.to_dict() != candidate.to_dict():
+                    raise ValueError(
+                        f"Conflicting details for supplier {candidate.supplier_id}"
+                    )
 
                 if product_type == "physical":
                     product = PhysicalProduct(
@@ -142,7 +216,8 @@ def load_inventory():
                         item["name"],
                         item["price"],
                         item["stock"],
-                        item["weight"]
+                        item["weight"],
+                        supplier
                     )
 
                 elif product_type == "digital":
@@ -151,7 +226,8 @@ def load_inventory():
                         item["name"],
                         item["price"],
                         item["stock"],
-                        item["download_size"]
+                        item["download_size"],
+                        supplier
                     )
 
                 else:
@@ -219,10 +295,6 @@ def menu_add_product(inventory):
                 print("Error: Weight must be positive.")
                 return
 
-            new_product = PhysicalProduct(
-                product_id, name, price, stock, weight
-            )
-
         else:
             download_size = float(input("Download Size (MB): "))
 
@@ -230,13 +302,40 @@ def menu_add_product(inventory):
                 print("Error: Download size must be positive.")
                 return
 
-            new_product = DigitalProduct(
-                product_id, name, price, stock, download_size
-            )
-
     except ValueError:
         print("Error: Invalid numeric input.")
         return
+
+    supplier_id = input("Supplier ID (existing ID to reuse): ").strip()
+    if supplier_id == UNKNOWN_SUPPLIER_ID:
+        print("Error: Supplier ID UNKNOWN is reserved for missing details.")
+        return
+
+    supplier = None
+    for product in inventory._products:
+        if product.supplier.supplier_id == supplier_id:
+            supplier = product.supplier
+            break
+
+    if supplier is None:
+        supplier_name = input("Supplier Name: ").strip()
+        contact_email = input("Supplier Email (blank if unavailable): ").strip()
+        try:
+            supplier = Supplier(supplier_id, supplier_name, contact_email)
+        except ValueError as error:
+            print(f"Error: {error}")
+            return
+    else:
+        print(f"Reusing supplier: {supplier.name}")
+
+    if product_type == "1":
+        new_product = PhysicalProduct(
+            product_id, name, price, stock, weight, supplier
+        )
+    else:
+        new_product = DigitalProduct(
+            product_id, name, price, stock, download_size, supplier
+        )
 
     if inventory.add_product(new_product):
         print("\nProduct added successfully!")
