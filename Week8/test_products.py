@@ -20,6 +20,12 @@ CanBeShipped = main.CanBeShipped
 Supplier = main.Supplier
 Order = main.Order
 
+
+def show_product_details(product: Product) -> None:
+    product.display_information()
+    print(product.get_fulfilment_info())
+
+
 class TestProductOverriding(unittest.TestCase):
 
     def setUp(self):
@@ -458,6 +464,96 @@ class TestInventoryAggregation(unittest.TestCase):
         with redirect_stdout(output):
             self.inventory_a.display_all()
         self.assertIn("Inventory is empty", output.getvalue())
+
+class TestProductSubstitutability(unittest.TestCase):
+    def setUp(self):
+        supplier = Supplier("S001", "Test supplier", "test@example.com")
+        self.products: list[Product] = [
+            PhysicalProduct("P001", "Laptop", 1200, 5, 2.5, supplier),
+            DigitalProduct("D001", "Antivirus", 49.90, 20, 500, supplier)
+        ]
+
+    def test_same_product_typed_consumer_accepts_each_subtype(self):
+        for product in self.products:
+            with self.subTest(product=type(product).__name__):
+                output = StringIO()
+                with redirect_stdout(output):
+                    result = show_product_details(product)
+                self.assertIsNone(result)
+                self.assertIn(product._product_id, output.getvalue())
+                self.assertIn(product._name, output.getvalue())
+                self.assertIn("Supplier: S001", output.getvalue())
+                fulfilment = product.get_fulfilment_info()
+                self.assertIsInstance(fulfilment, str)
+                self.assertTrue(fulfilment)
+                self.assertTrue(output.getvalue().endswith(fulfilment + "\n"))
+
+    def test_each_subtype_preserves_absolute_stock_update_contract(self):
+        for product in self.products:
+            with self.subTest(product=type(product).__name__):
+                self.assertIs(product.update_stock(12), True)
+                self.assertEqual(product._stock, 12)
+                self.assertIs(product.update_stock(3), True)
+                self.assertEqual(product._stock, 3)
+                self.assertIs(product.update_stock(0), True)
+                self.assertEqual(product._stock, 0)
+
+    def test_each_subtype_rejects_negative_stock_without_mutation(self):
+        for product in self.products:
+            with self.subTest(product=type(product).__name__):
+                original_stock = product._stock
+                self.assertIs(product.update_stock(-1), False)
+                self.assertEqual(product._stock, original_stock)
+                self.assertIs(product.update_stock(7), True)
+                self.assertEqual(product._stock, 7)
+
+    def test_normal_inventory_operations_accept_each_subtype(self):
+        inventory = Inventory()
+        for product in self.products:
+            with self.subTest(product=type(product).__name__):
+                self.assertIs(inventory.add_product(product), True)
+                found: Product | None = inventory.find_product(product._product_id)
+                self.assertIsNotNone(found)
+                self.assertIs(found, product)
+                self.assertIs(inventory.search_product(product._product_id), product)
+        output = StringIO()
+        with redirect_stdout(output):
+            result = inventory.display_all()
+        self.assertIsNone(result)
+        for product in self.products:
+            self.assertIn(product._product_id, output.getvalue())
+            self.assertIn(product._name, output.getvalue())
+
+    def test_cli_stock_update_accepts_each_subtype(self):
+        inventory = Inventory()
+        for product in self.products:
+            inventory.add_product(product)
+        for product in self.products:
+            with self.subTest(product=type(product).__name__):
+                for quantity in (9, 0):
+                    output = StringIO()
+                    with patch("builtins.input", side_effect=[product._product_id, str(quantity)]):
+                        with redirect_stdout(output):
+                            main.menu_update_stock(inventory)
+                    self.assertEqual(product._stock, quantity)
+                    self.assertIn("Stock updated successfully", output.getvalue())
+
+    def test_cli_rejected_stock_update_preserves_each_subtype(self):
+        inventory = Inventory()
+        for product in self.products:
+            inventory.add_product(product)
+        for product in self.products:
+            with self.subTest(product=type(product).__name__):
+                original_stock = product._stock
+                for text, message in (("-1", "Stock cannot be negative"),
+                                      ("bad", "Invalid stock value")):
+                    output = StringIO()
+                    with patch("builtins.input", side_effect=[product._product_id, text]):
+                        with redirect_stdout(output):
+                            main.menu_update_stock(inventory)
+                    self.assertEqual(product._stock, original_stock)
+                    self.assertIn(message, output.getvalue())
+
 
 class TestOrderComposition(unittest.TestCase):
     def setUp(self):
