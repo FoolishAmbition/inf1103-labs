@@ -555,6 +555,40 @@ class TestProductSubstitutability(unittest.TestCase):
                     self.assertIn(message, output.getvalue())
 
 
+class TestMixedProductPolymorphism(unittest.TestCase):
+    @unittest.skip("PF-4 deferred until the student's prediction is recorded")
+    def test_mixed_inventory_dispatches_display_and_fulfilment(self):
+        supplier = Supplier("S001", "Test supplier", "test@example.com")
+        physical = PhysicalProduct("P001", "Laptop", 1200, 5, 2.5, supplier)
+        digital = DigitalProduct("D001", "Antivirus", 49.90, 20, 500, supplier)
+        inventory = Inventory()
+        inventory.add_product(physical)
+        inventory.add_product(digital)
+        output = StringIO()
+
+        with patch.object(physical, "display_information", wraps=physical.display_information) as physical_display:
+            with patch.object(digital, "display_information", wraps=digital.display_information) as digital_display:
+                with patch.object(physical, "get_fulfilment_info", wraps=physical.get_fulfilment_info) as physical_fulfilment:
+                    with patch.object(digital, "get_fulfilment_info", wraps=digital.get_fulfilment_info) as digital_fulfilment:
+                        with redirect_stdout(output):
+                            for product in inventory._products:
+                                product.display_information()
+                                print(product.get_fulfilment_info())
+
+        physical_display.assert_called_once_with()
+        digital_display.assert_called_once_with()
+        physical_fulfilment.assert_called_once_with()
+        digital_fulfilment.assert_called_once_with()
+        lines = output.getvalue().splitlines()
+        self.assertIn("Weight: 2.5 kg", lines)
+        self.assertIn("Download Size: 500 MB", lines)
+        # Expected text comes from the existing overrides; no prediction is supplied here.
+        self.assertEqual(lines.count(physical.get_fulfilment_info()), 1)
+        self.assertEqual(lines.count(digital.get_fulfilment_info()), 1)
+        self.assertIn("P001", output.getvalue())
+        self.assertIn("D001", output.getvalue())
+
+
 class TestOrderComposition(unittest.TestCase):
     def setUp(self):
         supplier = Supplier("S001", "Test supplier", "test@example.com")

@@ -7,11 +7,11 @@ See [the detailed tracker](Background/Lab8_Project_Plan_and_Progress.md) for ver
 - [x] Order and OrderLine composition implementation (PF-3 evidence pending)
 - [x] Type hints and source/UML consistency review
 - [x] LSP executable contract checks (student-written diagnosis pending)
-- [ ] Polymorphism
+- [ ] Mixed-product polymorphism demonstration (test prepared; PF-4 pending)
 - [ ] Updated UML class diagram
 - [ ] Predict First notes
 - [ ] Automated tests
 - [ ] Docker verification
 - [ ] Git history and submission evidence
 
-Latest verification: 13 November 2026. Focused LSP suite: 6 passed. Full Week7/Week8 regression: 72 passed, 1 deferred. PF-2 transfer is explicitly skipped; official demonstrations and the student-written LSP diagnosis remain pending. UML source is aligned; exported submission diagram and final evidence remain pending.
+Latest verification: 13 November 2026. Mixed-product test discovery: 1 explicitly skipped for PF-4. Full Week7/Week8 regression: 72 passed, 2 deferred (PF-2 and PF-4). The mixed loop has not been executed. Official demonstrations and the student-written LSP diagnosis remain pending. UML source is aligned; exported submission diagram and final evidence remain pending.
