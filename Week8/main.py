@@ -154,21 +154,22 @@ class Inventory:
         self._products: list[Product] = []
 
     def add_product(self, product: Product) -> bool:
-        if self.search_product(product._product_id):
+        if self.find_product(product._product_id) is not None:
             print(f"Error: Product ID '{product._product_id}' already exists.")
             return False
 
         self._products.append(product)
         return True
 
-    def search_product(self, product_id: str) -> Product | None:
+    def find_product(self, product_id: str) -> Product | None:
         for product in self._products:
             if product._product_id == product_id:
                 return product
         return None
 
-    def find_product(self, product_id: str) -> Product | None:
-        return self.search_product(product_id)
+    def search_product(self, product_id: str) -> Product | None:
+        # Preserve the existing API while keeping one lookup implementation.
+        return self.find_product(product_id)
 
     def remove_product(self, product_id: str) -> bool:
         product = self.find_product(product_id)

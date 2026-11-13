@@ -96,9 +96,9 @@ classDiagram
 - UML `String`, `Real`, `Integer` and `Boolean` correspond to Python `str`, `float`, `int` and `bool`. `None` indicates no returned value. Python constructors will use `-> None`; UML constructor entries name the class being constructed.
 - `OptionalProduct` is shorthand for zero or one Product result, expressed as `Product | None` in Python. Callers must handle the missing result before invoking Product methods.
 - `List<Product>` and `List<OrderLine>` describe collection element types. `list[Product]` supports both existing concrete Product types through their common operations.
-- Preserve `add_product(...) -> bool`, duplicate-ID rejection and `search_product(...)` compatibility. Introduce `find_product(...)` as the common lookup and retain `search_product(...)` as a wrapper when that milestone is approved.
+- Implemented: `add_product(...) -> bool` preserves duplicate-ID rejection. `find_product(...) -> Product | None` contains the lookup loop; `search_product(...)` delegates to it for compatibility.
 - Preserve `update_stock(...) -> bool`: a nonnegative quantity sets absolute stock and succeeds; a negative quantity leaves stock unchanged and returns false.
-- Proposed removal returns `bool`; proposed read-only `price` access uses `_price` as its source of truth. Both remain subject to implementation-milestone review.
+- Implemented: `remove_product(...) -> bool` returns true when an entry was removed, false for a missing ID. Proposed read-only `price` access remains for the Order milestone and will use `_price` as its source of truth.
 - `SupplierRecord` is a Python TypedDict containing string fields `supplier_id`, `name` and `contact_email`. `ProductRecord` is a TypedDict with `id: str`, `name: str`, `price: float`, `stock: int` and `supplier: SupplierRecord`. Its subtype-specific fields `type: str`, `weight: float` and `download_size: float` are `NotRequired` because the common Product serializer builds the record before each subtype extends it. These are record descriptions, not domain classes.
 - Type hints communicate intent and support analysis tools. They do not automatically validate runtime values or enforce ownership.
 
@@ -107,7 +107,7 @@ classDiagram
 | Milestone | Open decisions |
 |---|---|
 | Supplier association | Milestone 1 decisions below; the official deletion demonstration remains deferred until the student records a prediction. |
-| Inventory aggregation | Finalize removal's boolean meanings and lookup delegation. Preserve shared-membership allowance unless an explicitly approved change introduces exclusivity. |
+| Inventory aggregation | Typed lookup/removal implemented; lookup delegation and boolean meanings recorded above. Shared-membership allowance unchanged. Official PF-2 demonstration deferred. |
 | Order composition | Order ID uniqueness policy, quantity validation, read-only price access, line inspection and line-removal API or an approved scenario that removes the Order. Add any selected method signatures to the diagram before coding them. |
 | Type and UML review | Resolve serialization placeholders, synchronize all signatures and attributes, check multiplicities against implementation and export the complete submission diagram. |
 
@@ -125,3 +125,7 @@ On 13 November 2026, the student distinguished association, aggregation and comp
 - CLI add asks for supplier details after validating the product's numeric fields. An existing supplier ID reuses the object referenced by a current inventory product; a new ID asks for name and contact email. No global registry is introduced: direct model callers are responsible for consistent IDs, and CLI/load enforce reuse within their inventory/session.
 - ProductRecord and SupplierRecord describe the serialized shape using standard-library TypedDict and NotRequired, compatible with the Dockerfile's Python 3.11.
 - Menu options, stock semantics and shipping behavior stay unchanged. The sample JSON remains unchanged; supplier fields are added only when the user saves.
+
+## Milestone 2 implementation review
+
+Inventory holds `list[Product]`; constructor, add, find, search, remove and display methods have type annotations. The diagram's Inventory signatures now match the source. No transfer method or extra menu option is introduced: the existing add/remove API is the intended interface. Transfer evidence remains deferred until PF-2 is recorded. Order-related diagram elements remain provisional.

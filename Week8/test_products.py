@@ -402,6 +402,7 @@ class TestInventoryAggregation(unittest.TestCase):
 
         self.assertFalse(result)
 
+    @unittest.skip("PF-2 deferred until the student's prediction is recorded")
     def test_transfer_between_inventories(self):
         self.inventory_a.add_product(self.product)
         self.inventory_a.remove_product("P001")
@@ -417,6 +418,45 @@ class TestInventoryAggregation(unittest.TestCase):
         self.assertTrue(self.inventory_a.add_product(self.product))
         self.assertFalse(self.inventory_a.add_product(self.product))
         self.assertEqual(len(self.inventory_a._products), 1)
+
+    def test_distinct_object_with_duplicate_id_rejected(self):
+        self.inventory_a.add_product(self.product)
+        duplicate = DigitalProduct("P001", "Different product", 10, 2, 50, self.supplier)
+        with redirect_stdout(StringIO()):
+            self.assertFalse(self.inventory_a.add_product(duplicate))
+        self.assertEqual(len(self.inventory_a._products), 1)
+        self.assertIs(self.inventory_a.find_product("P001"), self.product)
+
+    def test_search_delegates_to_find(self):
+        with patch.object(self.inventory_a, "find_product", return_value=self.product) as lookup:
+            self.assertIs(self.inventory_a.search_product("P001"), self.product)
+        lookup.assert_called_once_with("P001")
+
+    def test_remove_each_subtype_preserves_other_collection_entry(self):
+        digital = DigitalProduct("D001", "Antivirus", 49.90, 20, 500, self.supplier)
+        for target_id, remaining in (("P001", digital), ("D001", self.product)):
+            with self.subTest(target_id=target_id):
+                inventory = Inventory()
+                inventory.add_product(self.product)
+                inventory.add_product(digital)
+                self.assertTrue(inventory.remove_product(target_id))
+                self.assertIsNone(inventory.find_product(target_id))
+                self.assertIsNone(inventory.search_product(target_id))
+                self.assertEqual(inventory._products, [remaining])
+                self.assertFalse(inventory.remove_product(target_id))
+
+    def test_missing_removal_preserves_nonempty_collection(self):
+        self.inventory_a.add_product(self.product)
+        self.assertFalse(self.inventory_a.remove_product("missing"))
+        self.assertEqual(self.inventory_a._products, [self.product])
+
+    def test_empty_display_after_removing_last_entry(self):
+        self.inventory_a.add_product(self.product)
+        self.inventory_a.remove_product("P001")
+        output = StringIO()
+        with redirect_stdout(output):
+            self.inventory_a.display_all()
+        self.assertIn("Inventory is empty", output.getvalue())
 
 if __name__ == "__main__":
     unittest.main()
