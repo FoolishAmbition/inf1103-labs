@@ -1,0 +1,138 @@
+Command: docker run --rm -i inf1103-lab8 (scripted stdin; no host mounts)
+Verified: 13 November 2026 (Asia/Singapore); source commit e02e14d.
+
+# INVENTORY MANAGEMENT SYSTEM (OOP VERSION)
+
+Inventory loaded successfully.
+
+MENU
+1. Display All Products
+2. Add Product
+3. Update Stock
+4. Search Product
+5. Save Inventory
+6. Exit
+
+Enter option:
+Current Inventory
+
+ID: P001 | Name: Laptop | Price: $1200.00 | Stock: 5
+Supplier: UNKNOWN | Name: Unknown supplier | Email: Not provided
+Weight: 2.5 kg
+ID: D001 | Name: Antivirus | Price: $49.90 | Stock: 20
+Supplier: UNKNOWN | Name: Unknown supplier | Email: Not provided
+Download Size: 500.0 MB
+
+MENU
+1. Display All Products
+2. Add Product
+3. Update Stock
+4. Search Product
+5. Save Inventory
+6. Exit
+
+Enter option:
+Add New Product
+
+Select Product Type
+1. Physical Product
+2. Digital Product
+Enter product type: Product ID: Product Name: Price: Stock Quantity: Weight (kg): Supplier ID (existing ID to reuse): Supplier Name: Supplier Email (blank if unavailable):
+Product added successfully!
+
+MENU
+1. Display All Products
+2. Add Product
+3. Update Stock
+4. Search Product
+5. Save Inventory
+6. Exit
+
+Enter option:
+Add New Product
+
+Select Product Type
+1. Physical Product
+2. Digital Product
+Enter product type: Product ID: Product Name: Price: Stock Quantity: Download Size (MB): Supplier ID (existing ID to reuse): Reusing supplier: Demo Supplier
+
+Product added successfully!
+
+MENU
+1. Display All Products
+2. Add Product
+3. Update Stock
+4. Search Product
+5. Save Inventory
+6. Exit
+
+Enter option:
+Search Product
+Enter Product ID:
+Product Found
+
+ID: P099 | Name: USB Adapter | Price: $25.00 | Stock: 4
+Supplier: S099 | Name: Demo Supplier | Email: demo@example.com
+Weight: 0.2 kg
+
+MENU
+1. Display All Products
+2. Add Product
+3. Update Stock
+4. Search Product
+5. Save Inventory
+6. Exit
+
+Enter option:
+Update Stock
+Enter Product ID:
+Product Found:
+Name: Demo Download
+Current Stock: 10
+
+New Stock Quantity:
+Stock updated successfully!
+
+MENU
+1. Display All Products
+2. Add Product
+3. Update Stock
+4. Search Product
+5. Save Inventory
+6. Exit
+
+Enter option:
+Search Product
+Enter Product ID:
+Product Found
+
+ID: D099 | Name: Demo Download | Price: $12.50 | Stock: 7
+Supplier: S099 | Name: Demo Supplier | Email: demo@example.com
+Download Size: 100.0 MB
+
+MENU
+1. Display All Products
+2. Add Product
+3. Update Stock
+4. Search Product
+5. Save Inventory
+6. Exit
+
+Enter option:
+Saving inventory...
+Inventory saved successfully to inventory.json.
+
+MENU
+1. Display All Products
+2. Add Product
+3. Update Stock
+4. Search Product
+5. Save Inventory
+6. Exit
+
+Enter option:
+Saving inventory before exit...
+Inventory saved successfully to inventory.json.
+
+Thank you for using Inventory Management System. Program terminated.
+Exit code: 0
