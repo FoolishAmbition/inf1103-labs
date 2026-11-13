@@ -1,0 +1,74 @@
+classDiagram
+    class Product {
+        <<abstract>>
+        #String _product_id
+        #String _name
+        #Real _price
+        #Integer _stock
+        +Supplier supplier
+        +Real price
+        +Product(product_id String, name String, price Real, stock Integer, supplier Supplier)
+        +update_stock(quantity Integer) Boolean
+        +display_information() None
+        +get_fulfilment_info() String
+        +to_dict() ProductRecord
+    }
+    class PhysicalProduct {
+        #Real _weight
+        +PhysicalProduct(product_id String, name String, price Real, stock Integer, weight Real, supplier Supplier)
+        +display_information() None
+        +get_fulfilment_info() String
+        +calculate_shipping_cost() Real
+        +to_dict() ProductRecord
+    }
+    class DigitalProduct {
+        #Real _download_size
+        +DigitalProduct(product_id String, name String, price Real, stock Integer, download_size Real, supplier Supplier)
+        +display_information() None
+        +get_fulfilment_info() String
+        +to_dict() ProductRecord
+    }
+    class CanBeShipped {
+        <<interface>>
+        +calculate_shipping_cost() Real
+    }
+    class Supplier {
+        +String supplier_id
+        +String name
+        +String contact_email
+        +Supplier(supplier_id String, name String, contact_email String)
+        +display_information() None
+        +to_dict() SupplierRecord
+    }
+    class Inventory {
+        -List~Product~ _products
+        +Inventory()
+        +add_product(product Product) Boolean
+        +remove_product(product_id String) Boolean
+        +find_product(product_id String) OptionalProduct
+        +search_product(product_id String) OptionalProduct
+        +display_all() None
+    }
+    class Order {
+        +String order_id
+        -List~OrderLine~ _order_lines
+        +Order(order_id String)
+        +add_order_line(product Product, quantity Integer) None
+        +remove_order_line(index Integer) Boolean
+        +calculate_total() Real
+        +display_information() None
+    }
+    class OrderLine {
+        +Product product
+        +Integer quantity
+        +OrderLine(product Product, quantity Integer)
+        +calculate_subtotal() Real
+    }
+    Product <|-- PhysicalProduct
+    Product <|-- DigitalProduct
+    CanBeShipped <|.. PhysicalProduct : virtual registration
+    Supplier "1" -- "0..*" Product
+    Inventory "0..*" o-- "0..*" Product
+    Order "1" *-- "0..*" OrderLine
+    OrderLine "0..*" -- "1" Product
+    note for Product "price is a read-only property backed by _price"

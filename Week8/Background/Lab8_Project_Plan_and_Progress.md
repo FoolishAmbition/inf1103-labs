@@ -176,3 +176,14 @@ For each completed milestone append the date, actual files changed, test command
 - Evidence logs include the executed command, source commit and actual exit code; trailing console prompt whitespace normalized. Text logs do not replace required screenshots. No screenshots, manual interactive TTY run, exported UML, student Word notes or final package were created in this boundary.
 - Submission checklist records all remaining gaps: four official predictions/demonstrations, LSP diagnosis, AI-diagram notes, diagram export, screenshots, final enabled-test rerun and package audit. Milestone 7 and the overall lab remain incomplete while those items are pending.
 - Review the six approved files and whitespace before staging. Suggested commit: `docs(lab8): record Docker verification and submission gaps`. No staging, commit or push authorized for this boundary yet.
+
+## Milestone 7 UML export — 13 November 2026
+
+- Docker verification boundary committed as `8d85a20b619bc72410e3f509a74779a4fbfa7ec7`, `docs(lab8): record Docker verification and submission gaps`. Separately approved push succeeded; remote lab8 matched local HEAD. This supersedes the earlier pending-Git note.
+- Approved seven-file boundary: new `Week8/uml/Lab8_Class_Diagram.mmd`, `.svg` and `.png`; updated `Week8/Lab8_UML_Design.md`, `Week8/SUBMISSION_CHECKLIST.md`, `Week8/LAB8_PROGRESS.md` and this tracker.
+- Extracted the existing reviewed Mermaid block without altering its design. Exported SVG and PNG using a disposable Mermaid CLI container. Renderer image digest and successful arguments are recorded in the design document; no application dependency or source/test changes.
+- The initial PNG export was smaller than intended. The renderer rejected a viewport flag; inspected its actual help and rerendered successfully using its supported `--size 4500`. Final PNG is 4500 × 2564 pixels. Both final SVG/PNG render commands exited 0.
+- Checked Mermaid text equality with the design block; SVG parses as XML and contains all eight domain/interface classes. Visually inspected the exported diagram, including long constructor signatures, property note, generalization/interface arrows, association lines, hollow/filled diamonds and multiplicity endpoints. No clipping or overlap observed.
+- Diagram exports are complete and supersede earlier pending-export notes. The student-authored accepted/changed AI suggestion notes remain pending. Official predictions/demonstrations, LSP diagnosis, screenshots and final package are still incomplete.
+- No application code changed; no tests rerun for this documentation/export boundary. Latest runtime evidence remains host 72 passed/2 skipped and Docker 56 passed/2 skipped. Root `Background/` and `Week8.zip` remain untouched.
+- Review diff/whitespace before staging. Suggested commit: `docs(lab8): export source-aligned class diagram`. No staging, commit or push authorized for this boundary yet.

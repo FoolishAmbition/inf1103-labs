@@ -1,6 +1,6 @@
 # Lab 8 typed relationship design
 
-This provisional design adapts the [PRD draft](Background/PRD_Lab8.md) for the active `Week8/` application. Supplier association, Inventory lookup/removal and Order composition are implemented and tested. Official PF-1, PF-2 and PF-3 demonstrations remain deferred. Later milestones still need a focused proposal and explicit approval. The final submission diagram must be checked against the finished source and exported legibly.
+This design adapts the [PRD draft](Background/PRD_Lab8.md) for the active `Week8/` application. Supplier association, Inventory lookup/removal and Order composition are implemented and tested. Official PF-1, PF-2 and PF-3 demonstrations remain deferred. The source-aligned diagram has been exported and visually checked; later source changes require a fresh alignment/export review.
 
 ## Relationships and ownership
 
@@ -162,3 +162,13 @@ The two TypedDict record shapes are defined in the types section above. They des
 Reviewed all diagram attributes, methods and relationship endpoints against source. Association edges have no ownership diamonds; Inventory uses a hollow diamond and permits shared membership; Order uses a filled diamond and each line has exactly one intended owner. `OptionalProduct` means a Product return multiplicity of 0..1. The read-only price note distinguishes a property from a second stored price field. Free CLI/persistence functions are described above rather than represented as domain classes.
 
 Verification on 13 November 2026: annotation coverage and runtime hint resolution passed; stripping annotations produced the same executable syntax tree as the preceding commit. Full regression: 66 passed, 1 PF-2 skip. No static type checker was installed or run, no new dependency was added, and the Mermaid diagram has not been exported or visually verified for submission. The student's accepted/changed AI suggestions remain to be recorded in their own words.
+
+## Submission diagram exports — 13 November 2026
+
+- [Editable Mermaid source](uml/Lab8_Class_Diagram.mmd), extracted directly from the diagram block above and checked for exact text equality.
+- [Scalable SVG](uml/Lab8_Class_Diagram.svg), parsed as valid XML and checked for all eight domain/interface classes.
+- [High-resolution PNG](uml/Lab8_Class_Diagram.png), 4500 × 2564 pixels, visually inspected for unclipped signatures, readable types, inheritance triangles, virtual interface registration, ownership diamonds and endpoint multiplicities.
+
+Rendering used a disposable `ghcr.io/mermaid-js/mermaid-cli/mermaid-cli` container, image digest `sha256:18938e53497376d524e04b1fc0bf7b6d61a491ce9ff7032bb2855d57155acb10`. The container mounted only `Week8/uml` at `/data`. Its supported CLI options generated SVG with `-i /data/Lab8_Class_Diagram.mmd -o /data/Lab8_Class_Diagram.svg -b white` and PNG with `-i /data/Lab8_Class_Diagram.mmd -o /data/Lab8_Class_Diagram.png -b white --size 4500`. No renderer dependency was installed in the application.
+
+This completes export/visual review and supersedes the earlier pending-export notes. It does not supply the student's AI-use reflection, official predictions, or runtime demonstration evidence. `OptionalProduct` denotes Product [0..1] (`Product | None`); ProductRecord/SupplierRecord are serialized record shapes defined above. Submit this design explanation alongside the diagram when those labels need context.

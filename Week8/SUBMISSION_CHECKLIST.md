@@ -11,12 +11,12 @@ Verification date: 13 November 2026 (Asia/Singapore). Runtime source tested at c
 | Order composition | Single-order subtotal, multi-line total, display and removal tests verified | Record PF-3 prediction, then run the official two-order identity experiment and record observation/comparison. |
 | Polymorphism | Mixed-product test prepared but skipped | Record PF-4 prediction, then enable/run the mixed-loop test and record observation/comparison. |
 | LSP written diagnosis | Executable stock/substitution checks verified | Student writes the handout's 2–3 sentence diagnosis in their own words. |
-| Complete UML | Source-aligned Mermaid in `Lab8_UML_Design.md` | Export a legible diagram and inspect it. Include student-authored notes identifying one AI suggestion accepted and one changed. |
+| Complete UML | Source-aligned [Mermaid](uml/Lab8_Class_Diagram.mmd), [SVG](uml/Lab8_Class_Diagram.svg) and [4500 × 2564 PNG](uml/Lab8_Class_Diagram.png), exported and visually checked | Include student-authored notes identifying one AI suggestion accepted and one changed. Include design notes explaining optional/record labels. |
 | Predict First Word document | No Lab 8 prediction document created | Include all four student-authored predictions, observations and comparisons, with predictions recorded before their respective demonstrations. `Week7Submission.docx` is a prior artifact, not the Lab 8 prediction document. |
 | Docker build | [Build log](evidence/docker_build.txt), exit 0 | Capture the course-required screenshot showing command and result. |
 | Docker tests | [Test log](evidence/docker_tests.txt): 58 discovered, 56 passed, 2 skipped, exit 0 | After deferred tests are enabled, rerun and capture final evidence. |
 | Docker CLI | [CLI log](evidence/docker_cli.txt), exit 0 | Capture the course-required program-run screenshot. Scripted stdin verified the CLI; no manual TTY screenshot was produced. |
-| Git history and push | Milestone pushes verified through `e02e14d` | Commit/push this evidence boundary after separate approvals; capture final Git history/status/push screenshots. |
+| Git history and push | Milestone pushes verified through `8d85a20` | Commit/push the UML export boundary after separate approvals; capture final Git history/status/push screenshots. |
 | Final package | Existing root `Week8.zip` left untouched and not audited | Assemble/review a final package once outstanding evidence is complete. Do not assume the existing ZIP contains current changes. |
 
 ## Verified Docker workflow
