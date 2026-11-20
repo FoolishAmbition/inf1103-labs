@@ -24,4 +24,4 @@ ID: P003 | Name: Monitor Stand | Price: $39.50 | Stock: 7
 Inventory saved.
 ```
 
-The Git entry reflects the current implementation commit. The Docker output is excerpted from the successful runs. The PowerShell UI could not be opened through the screenshot tool.
+The Git entry reflects the current implementation commit. The Docker output is excerpted from the successful runs. The terminal screenshots are in [screenshots](screenshots/). The Git screenshot shows the two Lab 9 commits before the report and screenshots were added.
