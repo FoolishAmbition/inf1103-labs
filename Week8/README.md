@@ -23,4 +23,4 @@ docker run --rm -it inf1103-lab9
 
 The disposable container keeps saved inventory until it exits.
 
-See [UML.md](UML.md) for the class diagram and [Predict First Report.docx](Predict%20First%20Report.docx) for the completed prediction report. See [screenshots](screenshots/) for the Git and Docker evidence.
+See [UML.md](UML.md) for the class diagram and [Predict First.docx](Predict%20First.docx) for the completed prediction report. See [screenshots](screenshots/) for the Git and Docker evidence.
